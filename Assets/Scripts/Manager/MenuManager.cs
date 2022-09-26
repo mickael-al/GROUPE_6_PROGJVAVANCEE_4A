@@ -2,16 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MenuManager : MonoBehaviour
+namespace WJ
 {
-    void Start()
+    public class MenuManager : MonoBehaviour
     {
-        
-    }
+        [SerializeField] private Animator animator = null;
 
-    // Update is called once per frame
-    void Update()
-    {
+        void Start()
+        {
         
+        }
+        void Update()
+        {
+
+        }
+
+        public void Option()
+        {
+            animator.SetTrigger("Option");
+        }
+
     }
 }
