@@ -13,11 +13,25 @@ public class FrisbieController : MonoBehaviour
 
     private bool playerTouched = false;
 
+    private Rigidbody rigidbody;
+
     //private bool isGameOver = false;
+
+    private void Start() 
+    {
+        rigidbody =  GetComponent<Rigidbody>();
+    }
 
     void Update()
     {
-        RegularThrow(false);
+        rigidbody.AddForce(transform.forward * speed * Time.deltaTime, ForceMode.Impulse);
+    }
+
+    //bounce the ball with an angle of 45 degree
+    private void OnCollisionEnter(Collision other) 
+    {
+        if(other.gameObject.CompareTag("Wall"))
+            transform.Rotate(Vector3.up, 45);
     }
 
     //reduce speed when the frisbie is in the player hand (to do)
@@ -34,7 +48,7 @@ public class FrisbieController : MonoBehaviour
     void RegularThrow(bool isDiagnol)
     {
         if (!isDiagnol)
-            transform.Translate(Vector3.right * speed * Time.deltaTime);
+            transform.Translate(Vector3.forward * speed * Time.deltaTime);
         else
             transform.Translate(dir /*to do diagonal movement*/ * speed * Time.deltaTime);
     }

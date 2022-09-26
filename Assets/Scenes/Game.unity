@@ -282,7 +282,7 @@ GameObject:
   - component: {fileID: 472962425}
   m_Layer: 0
   m_Name: Wall
-  m_TagString: Wall
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -585,7 +585,7 @@ GameObject:
   - component: {fileID: 1179715850}
   m_Layer: 0
   m_Name: Wall (1)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -612,7 +612,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1179715848}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 804ddf255ab9c7940a302ff38cfcc8c3, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -878,7 +878,7 @@ GameObject:
   - component: {fileID: 1533594743}
   m_Layer: 0
   m_Name: Wall (3)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -905,7 +905,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1533594741}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 804ddf255ab9c7940a302ff38cfcc8c3, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -975,7 +975,7 @@ GameObject:
   - component: {fileID: 1548787633}
   m_Layer: 0
   m_Name: Wall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1002,7 +1002,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1548787631}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 804ddf255ab9c7940a302ff38cfcc8c3, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1071,6 +1071,7 @@ GameObject:
   - component: {fileID: 1821361017}
   - component: {fileID: 1821361016}
   - component: {fileID: 1821361020}
+  - component: {fileID: 1821361021}
   m_Layer: 0
   m_Name: Frisbie
   m_TagString: Untagged
@@ -1085,7 +1086,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1821361015}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 804ddf255ab9c7940a302ff38cfcc8c3, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1149,7 +1150,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1821361015}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.29, y: 1.53, z: 0.79}
+  m_LocalPosition: {x: -0.29, y: 0.431, z: 0.79}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1168,6 +1169,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62d4ed79c09d13341bcbd36a7aa8f082, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!54 &1821361021
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821361015}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1908161931
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,7 +1199,7 @@ GameObject:
   - component: {fileID: 1908161933}
   m_Layer: 0
   m_Name: Wall (2)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1209,7 +1226,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1908161931}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 804ddf255ab9c7940a302ff38cfcc8c3, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
