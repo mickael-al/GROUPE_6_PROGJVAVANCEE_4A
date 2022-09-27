@@ -34,6 +34,7 @@ namespace WJ
             }
             else
             {
+                FadeScreenManager.FadeOut();
                 Destroy(gameObject);
             }
         }

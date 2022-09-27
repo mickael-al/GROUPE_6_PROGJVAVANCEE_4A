@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 namespace WJ
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : Entity
     {
         [SerializeField] private GameObject prefabCharcterObject = null;
         [SerializeField] private GameObject friesbeeObject = null;
@@ -23,6 +24,7 @@ namespace WJ
         private int SetLeftCount = 0;
         private int SetRightCount = 0;
         private int round = 0;
+        private bool pauseGame = false;
 
         [Header("Interface")]
         [SerializeField] private TextMeshProUGUI timeText = null;
@@ -93,8 +95,9 @@ namespace WJ
 
 
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             instance = this;
             gameTime = RoundMaxTime;
             endGame = false;
@@ -102,7 +105,14 @@ namespace WJ
 
         public void Start()
         {
+            InputManager.InputJoueur.Player.Pause.performed += PauseGame;
             InitGame();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            InputManager.InputJoueur.Player.Pause.performed -= PauseGame;
         }
 
         public void InitGame()
@@ -113,6 +123,20 @@ namespace WJ
             frisbie = Instantiate(friesbeeObject,Vector3.zero,Quaternion.identity).GetComponent<FrisbieController>();
             frisbie.Reset();
             StartThrow(Random.Range(0,2) == 0 ? Faction.Left : Faction.Right);
+            SeeCursor(false);
+        }
+
+        public void SeeCursor(bool state)
+        {
+            Cursor.visible = state;
+            if(state)
+            {
+                Cursor.lockState = CursorLockMode.None;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+            }
         }
 
         public IEnumerator ResetWin(Faction f)
@@ -171,6 +195,14 @@ namespace WJ
             gameTime = RoundMaxTime;
             endGame = false;
             StartThrow(Random.Range(0,2) == 0 ? Faction.Left : Faction.Right);
+        }
+
+        public void PauseGame(InputAction.CallbackContext ctx)
+        {
+            pauseGame =!pauseGame;
+            pauseObj.SetActive(pauseGame);
+            SeeCursor(pauseGame);
+            GamePauseManager.Instance.SetPause(pauseGame ? GamePause.Pause : GamePause.GamePlay);
         }
 
         void Update()

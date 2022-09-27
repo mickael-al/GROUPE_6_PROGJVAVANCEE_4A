@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace WJ
 {
@@ -53,6 +54,21 @@ namespace WJ
                 return;
             }
             animator.SetTrigger("Carte");
+        }
+
+        public void LoadCarte()
+        {
+            if(NotClick())
+            {   
+                return;
+            }
+            FadeScreenManager.FadeIn();
+            FadeScreenManager.OnFadeInComplete += LoadScene;
+        }
+
+        private void LoadScene()
+        {
+            SceneManager.LoadScene("Game",LoadSceneMode.Single);
         }
 
         public void Quitter()
