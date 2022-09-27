@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
+using WJ_Controller;
+using UnityEngine.SceneManagement;
 
 namespace WJ
 {
@@ -12,6 +14,7 @@ namespace WJ
         [SerializeField] private GameObject friesbeeObject = null;
         [SerializeField] private List<GameObject> mapObject = new List<GameObject>();
         [SerializeField] private float RoundMaxTime = 90.0f;
+        [SerializeField] private Vector2 terrainSize = new Vector2(20.0f,10.0f);
         [SerializeField] private Vector3[] characterPosition = {new Vector3(0,0,0),new Vector3(0,0,0)};
         private FrisbieController frisbie = null;       
         private GameObject characterLeft = null; 
@@ -32,6 +35,7 @@ namespace WJ
         [SerializeField] private TextMeshProUGUI scoreRightText = null;
         [SerializeField] private GameObject roundSetObject = null;
         [SerializeField] private GameObject pauseObj = null;
+        [SerializeField] private GameObject winObj = null;
         [SerializeField] private TextMeshProUGUI textRoundScoreLeft = null;
         [SerializeField] private TextMeshProUGUI textRoundScoreRight = null;
 
@@ -39,6 +43,11 @@ namespace WJ
         private static int indicePlayerLeft = 0;
         private static int indicePlayerRight = 0;
         private static CharacterMode characterModeRight = CharacterMode.Player; 
+
+        public Vector2 TerrainSize
+        {
+            get{return terrainSize;}
+        }
 
         public static int IndicePlayerLeft
         {
@@ -119,11 +128,31 @@ namespace WJ
         {
             Instantiate(mapObject[indiceMap],Vector3.zero,Quaternion.identity);
             characterLeft = Instantiate(prefabCharcterObject,characterPosition[0],Quaternion.identity);
+            InitCharacter(characterLeft,RessourceManager.Instance.CharacterInfos[indicePlayerLeft],Faction.Left);
             characterRight = Instantiate(prefabCharcterObject,characterPosition[1],Quaternion.identity);
+            InitCharacter(characterRight,RessourceManager.Instance.CharacterInfos[indicePlayerRight],Faction.Right);
             frisbie = Instantiate(friesbeeObject,Vector3.zero,Quaternion.identity).GetComponent<FrisbieController>();
             frisbie.Reset();
             StartThrow(Random.Range(0,2) == 0 ? Faction.Left : Faction.Right);
             SeeCursor(false);
+        }
+
+        public void InitCharacter(GameObject obj,CharacterInfo ci,Faction f)
+        {
+            Character p = null;
+            if(f == Faction.Left || characterModeRight == CharacterMode.Player)
+            {
+                p = obj.AddComponent<Player>();
+            }
+            else if(characterModeRight == CharacterMode.RandomBot)
+            {
+                p = obj.AddComponent<RandomBot>();             
+            }
+            else if(characterModeRight == CharacterMode.MCTSBot)
+            {
+                p = obj.AddComponent<MCTSBot>();             
+            }
+            p.InitCharacter(ci,f);
         }
 
         public void SeeCursor(bool state)
@@ -152,8 +181,8 @@ namespace WJ
 
         public void ResetPlayerPosition()
         {
-            characterLeft.transform.position = characterPosition[0];
-            characterLeft.transform.position = characterPosition[1];
+            characterLeft.GetComponent<Character>().ResetSpawnPosition();
+            characterRight.GetComponent<Character>().ResetSpawnPosition();
         }
 
 
@@ -170,6 +199,19 @@ namespace WJ
             }
             dir.y = 0;
             frisbie.Throw(dir,10.0f);
+        }
+
+        public void BackMenu()
+        {
+            SeeCursor(true);
+            FadeScreenManager.FadeIn();
+            FadeScreenManager.OnFadeInComplete += LoadScene;
+        }
+
+        private void LoadScene()
+        {
+            FadeScreenManager.OnFadeInComplete -= LoadScene;
+            SceneManager.LoadScene("Menu",LoadSceneMode.Single);
         }
 
         public IEnumerator WinResetRound()
@@ -190,12 +232,39 @@ namespace WJ
             textRoundScoreRight.text = SetRightCount.ToString("00");
             MajUIScore();
             roundSetObject.SetActive(true);
-            yield return new WaitForSeconds(2.0f);
-            roundSetObject.SetActive(false);
-            gameTime = RoundMaxTime;
-            endGame = false;
-            StartThrow(Random.Range(0,2) == 0 ? Faction.Left : Faction.Right);
+            Faction f;
+            if(isWinBO3(out f))
+            {
+                winObj.SetActive(true);
+                yield return new WaitForSeconds(4.0f);
+                BackMenu();
+            }
+            else
+            {
+                yield return new WaitForSeconds(2.0f);
+                roundSetObject.SetActive(false);
+                gameTime = RoundMaxTime;
+                endGame = false;
+                StartThrow(Random.Range(0,2) == 0 ? Faction.Left : Faction.Right);
+            }
         }
+
+        public bool isWinBO3(out Faction faction)
+        {
+            if(SetLeftCount == 3 || (SetLeftCount == 2 && SetRightCount == 0))
+            {
+                faction = Faction.Left;
+                return true;
+            }
+            else if(SetRightCount == 3 || (SetRightCount == 2 && SetLeftCount == 0))
+            {
+                faction = Faction.Right;
+                return true;
+            }
+            faction = Faction.Left;
+            return false;
+        }
+        
 
         public void PauseGame(InputAction.CallbackContext ctx)
         {

@@ -68,6 +68,7 @@ namespace WJ
 
         private void LoadScene()
         {
+            FadeScreenManager.OnFadeInComplete -= LoadScene;
             SceneManager.LoadScene("Game",LoadSceneMode.Single);
         }
 

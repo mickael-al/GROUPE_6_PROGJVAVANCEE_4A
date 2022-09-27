@@ -9230,47 +9230,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ressource
       objectReference: {fileID: 0}
-    - target: {fileID: 8702531268168055214, guid: 0dc5e3857c0be334fa4a60a4d8cda00c,
-        type: 3}
-      propertyPath: characterInfos.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8702531268168055214, guid: 0dc5e3857c0be334fa4a60a4d8cda00c,
-        type: 3}
-      propertyPath: characterInfos.Array.data[1]
-      value: 
-      objectReference: {fileID: 11400000, guid: 276dcb9020a37b3488417f5bcffccf7a,
-        type: 2}
-    - target: {fileID: 8702531268168055214, guid: 0dc5e3857c0be334fa4a60a4d8cda00c,
-        type: 3}
-      propertyPath: characterInfos.Array.data[2]
-      value: 
-      objectReference: {fileID: 11400000, guid: c2462d63461d4ab4997e2d93cfe13518,
-        type: 2}
-    - target: {fileID: 8702531268168055214, guid: 0dc5e3857c0be334fa4a60a4d8cda00c,
-        type: 3}
-      propertyPath: characterInfos.Array.data[3]
-      value: 
-      objectReference: {fileID: 11400000, guid: 37f9aaebf42d01d499e0612f021691b7,
-        type: 2}
-    - target: {fileID: 8702531268168055214, guid: 0dc5e3857c0be334fa4a60a4d8cda00c,
-        type: 3}
-      propertyPath: characterInfos.Array.data[4]
-      value: 
-      objectReference: {fileID: 11400000, guid: c679e4eea2e63d5468271b551d8f7ce7,
-        type: 2}
-    - target: {fileID: 8702531268168055214, guid: 0dc5e3857c0be334fa4a60a4d8cda00c,
-        type: 3}
-      propertyPath: characterInfos.Array.data[5]
-      value: 
-      objectReference: {fileID: 11400000, guid: ee0be7740dc42a841beadf3f38c7582c,
-        type: 2}
-    - target: {fileID: 8702531268168055214, guid: 0dc5e3857c0be334fa4a60a4d8cda00c,
-        type: 3}
-      propertyPath: characterInfos.Array.data[6]
-      value: 
-      objectReference: {fileID: 11400000, guid: 4ea4fd8671372c048a28a665274c59cb,
-        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0dc5e3857c0be334fa4a60a4d8cda00c, type: 3}
 --- !u!1001 &6484577748467561469
@@ -9280,16 +9239,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6484577747519360008, guid: ea22f46b68dd81842a2696711893b565,
-        type: 3}
-      propertyPath: m_UiScaleMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6484577747519360008, guid: ea22f46b68dd81842a2696711893b565,
-        type: 3}
-      propertyPath: m_MatchWidthOrHeight
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 6484577747519360010, guid: ea22f46b68dd81842a2696711893b565,
         type: 3}
       propertyPath: m_Pivot.x

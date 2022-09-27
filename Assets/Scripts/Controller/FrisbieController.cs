@@ -8,9 +8,9 @@ namespace WJ
     {
         [SerializeField] private float rayon = 0.5f;
         [SerializeField] private float baseHeight = 4.0f;  
-        [SerializeField] private Vector2 TerrainSize = new Vector2(20.0f,10.0f);
         private Vector3 currentDirection;
         private ThrowMode throwMode = ThrowMode.Throw;
+        private Vector2 terrainCalcule;
 
         public Vector3 CurrentDirection
         {
@@ -34,6 +34,11 @@ namespace WJ
             transform.position = new Vector3(transform.position.x,baseHeight,transform.position.z);
         }
 
+        public void Start()
+        {
+            terrainCalcule = GameManager.Instance.TerrainSize/2.0f;
+        }
+
         public void Update()
         {
             if(throwMode == ThrowMode.Throw)
@@ -45,34 +50,34 @@ namespace WJ
 
         private void BoardCollision()
         {
-            if((TerrainSize.y/2.0f)-rayon < transform.position.z)
+            if((terrainCalcule.y)-rayon < transform.position.z)
             {
                 currentDirection.z = -currentDirection.z;                
-                transform.position = new Vector3(transform.position.x,transform.position.y,(TerrainSize.y/2.0f)-rayon);
+                transform.position = new Vector3(transform.position.x,transform.position.y,(terrainCalcule.y)-rayon);
             }
-            if(-(TerrainSize.y/2.0f)+rayon > transform.position.z)
+            if(-(terrainCalcule.y)+rayon > transform.position.z)
             {
                 currentDirection.z = -currentDirection.z; 
-                transform.position = new Vector3(transform.position.x,transform.position.y,-(TerrainSize.y/2.0f)+rayon);
+                transform.position = new Vector3(transform.position.x,transform.position.y,-(terrainCalcule.y)+rayon);
             }
-            if((TerrainSize.x/2.0f)-rayon < transform.position.x)
+            if((terrainCalcule.x)-rayon < transform.position.x)
             {
                 currentDirection.x = -currentDirection.x;
-                transform.position = new Vector3((TerrainSize.x/2.0f)-rayon,transform.position.y,transform.position.z);
-                GameManager.Instance.AddScorePoint(Faction.Left, (((TerrainSize.y/2.0f)*(1/2.5f))-rayon < transform.position.z || (-((TerrainSize.y/2.0f)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
+                transform.position = new Vector3((terrainCalcule.x/2.0f)-rayon,transform.position.y,transform.position.z);
+                GameManager.Instance.AddScorePoint(Faction.Left, (((terrainCalcule.y)*(1/2.5f))-rayon < transform.position.z || (-((terrainCalcule.y)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
             }
-            if(-(TerrainSize.x/2.0f)+rayon > transform.position.x)
+            if(-(terrainCalcule.x)+rayon > transform.position.x)
             {
                 currentDirection.x = -currentDirection.x;
-                transform.position = new Vector3(-(TerrainSize.x/2.0f)+rayon,transform.position.y,transform.position.z);
-                GameManager.Instance.AddScorePoint(Faction.Right, (((TerrainSize.y/2.0f)*(1/2.5f))-rayon < transform.position.z || (-((TerrainSize.y/2.0f)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
+                transform.position = new Vector3(-(terrainCalcule.x)+rayon,transform.position.y,transform.position.z);
+                GameManager.Instance.AddScorePoint(Faction.Right, (((terrainCalcule.y)*(1/2.5f))-rayon < transform.position.z || (-((terrainCalcule.y)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
             }
         }
 
         public void Reset()
         {
             Stop();
-            transform.position = new Vector3(0,baseHeight,-(TerrainSize.y/2.0f)+rayon);
+            transform.position = new Vector3(0,baseHeight,-(terrainCalcule.y)+rayon);
         }
 
         public void Throw(Vector3 dir,float force = 1.0f)
