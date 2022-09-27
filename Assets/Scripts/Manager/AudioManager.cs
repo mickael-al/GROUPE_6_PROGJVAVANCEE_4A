@@ -33,6 +33,10 @@ namespace WJ
 
        private void Awake()
        {
+            if(instance != null)
+            {
+                Destroy(gameObject);
+            }
             instance = this;
             DontDestroyOnLoad(gameObject);
             volumeGlobal = PlayerPrefs.GetFloat("AudioVoulumeGlobal",0.5f);

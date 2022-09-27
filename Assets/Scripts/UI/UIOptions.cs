@@ -13,10 +13,6 @@ namespace WJ
         [SerializeField] private TMP_Dropdown resolution = null;
         [SerializeField] private TMP_Dropdown format = null;
         [SerializeField] private Toggle fullScreen = null;
-
-        private int ratioId = 1;
-        private int resolutionId = 4;
-
         private readonly float[] ratio =
         {
             4.0f/3.0f,
