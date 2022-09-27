@@ -33,10 +33,11 @@ namespace WJ
 
         public void Start()
         {
+            //Application.targetFrameRate = 60;
             resolution.value = PlayerPrefs.GetInt("resolutionId",4);
             format.value = PlayerPrefs.GetInt("RatioId",1);
             fullScreen.isOn = PlayerPrefs.GetInt("FullScreen",1) == 1;
-            sliderVolume.value = AudioManager.Instance.VolumeGlobal;
+            sliderVolume.value = AudioManager.Instance.Volume;
             ScreenResolution();
         }
 
@@ -49,12 +50,12 @@ namespace WJ
 
         public void OnChangeVolume()
         {
-            AudioManager.Instance.VolumeGlobal = sliderVolume.value;
+            AudioManager.Instance.Volume = sliderVolume.value;
         }
 
         public void SaveOption()
         {
-            PlayerPrefs.SetFloat("AudioVoulumeGlobal",sliderVolume.value);
+            PlayerPrefs.SetFloat("VolumeGlobal",sliderVolume.value);
             PlayerPrefs.SetInt("resolutionId",resolution.value);
             PlayerPrefs.SetInt("RatioId",format.value);
             PlayerPrefs.SetInt("FullScreen",fullScreen.isOn ? 1 : 0);

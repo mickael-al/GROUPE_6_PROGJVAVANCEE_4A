@@ -1,8 +1,5 @@
-namespace WJ
+﻿public enum GamePause
 {
-    public enum GamePause 
-    {
-        Play,
-        Pause
-    }
+    GamePlay,
+    Pause
 }

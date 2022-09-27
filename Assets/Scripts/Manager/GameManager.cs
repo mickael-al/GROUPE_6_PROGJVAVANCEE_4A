@@ -33,9 +33,34 @@ namespace WJ
         [SerializeField] private TextMeshProUGUI textRoundScoreLeft = null;
         [SerializeField] private TextMeshProUGUI textRoundScoreRight = null;
 
-        private static int IndiceMap = 0; 
-        private static int IndicePlayerLeft = 0;
-        private static int IndicePlayerRight = 0;
+        private static int indiceMap = 0; 
+        private static int indicePlayerLeft = 0;
+        private static int indicePlayerRight = 0;
+        private static CharacterMode characterModeRight = CharacterMode.Player; 
+
+        public static int IndicePlayerLeft
+        {
+            get{return indicePlayerLeft;}
+            set{indicePlayerLeft = value;}
+        }
+
+        public static int IndicePlayerRight
+        {
+            get{return indicePlayerRight;}
+            set{indicePlayerRight = value;}
+        }
+
+        public static int IndiceMap
+        {
+            get{return indiceMap;}
+            set{indiceMap = value;}
+        }
+
+        public static CharacterMode CharacterModeRight
+        {
+            get{return characterModeRight;}
+            set{characterModeRight = value;}
+        }
 
         public void AddScorePoint(Faction f,int value = 1)
         {
@@ -82,7 +107,7 @@ namespace WJ
 
         public void InitGame()
         {
-            Instantiate(mapObject[IndiceMap],Vector3.zero,Quaternion.identity);
+            Instantiate(mapObject[indiceMap],Vector3.zero,Quaternion.identity);
             characterLeft = Instantiate(prefabCharcterObject,characterPosition[0],Quaternion.identity);
             characterRight = Instantiate(prefabCharcterObject,characterPosition[1],Quaternion.identity);
             frisbie = Instantiate(friesbeeObject,Vector3.zero,Quaternion.identity).GetComponent<FrisbieController>();
