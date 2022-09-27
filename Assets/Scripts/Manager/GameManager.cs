@@ -22,15 +22,7 @@ namespace WJ
             {
                 instance = this;
             }
-        }
 
-        void Start()
-        {   
-            
-        }
-
-        void Update()
-        {
             
         }
     }
