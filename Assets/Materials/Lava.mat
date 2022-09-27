@@ -121,8 +121,8 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DistortX: 2
-    - _DistortY: 2
+    - _DistortX: 0.5
+    - _DistortY: 0.5
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
@@ -137,7 +137,7 @@ Material:
     - _RockAmount: 1
     - _RockNormalStrength: 1
     - _RockOutOff: 0.75
-    - _RockScale: 4
+    - _RockScale: 10
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
