@@ -39,7 +39,7 @@ namespace WJ
             transform.eulerAngles = new Vector3(0,Faction.Left == faction ? 90 : -90,0);
             animator = transform.GetChild(0).GetComponent<Animator>();
             transform.GetChild(0).GetChild(0).GetComponent<SkinnedMeshRenderer>().material.SetTexture("_BaseMap",ci.Texture);
-            Speed = ci.CharacterPercent*15.0f;
+            Speed = ci.CharacterPercent*25.0f;
             Strength = (1.0f-ci.CharacterPercent)*25.0f;
             frisbie = GameManager.Instance.Frisbie;
         }

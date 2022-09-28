@@ -58,6 +58,7 @@ namespace WJ
                decalage+=100.0f;
                id++;
             }
+            OnCharacterModeChange();
         }
 
         public void Choix(int idCharacter,Faction type)
@@ -85,7 +86,6 @@ namespace WJ
         public void OnCharacterModeChange()
         {
             GameManager.CharacterModeRight = (CharacterMode)characterMode.value;
-            Debug.Log((CharacterMode)characterMode.value);
         }
     }   
 }
