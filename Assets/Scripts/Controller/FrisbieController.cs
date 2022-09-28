@@ -12,6 +12,8 @@ namespace WJ
         private ThrowMode throwMode = ThrowMode.Throw;
         private Vector2 terrainCalcule;
 
+        private bool move = false;
+
         public Vector3 CurrentDirection
         {
             get
@@ -19,6 +21,14 @@ namespace WJ
                 return currentDirection;
             }
         } 
+
+        public bool Moves
+        {
+            get
+            {
+                return move;
+            }
+        }
 
         public float Rayon
         {
@@ -30,6 +40,7 @@ namespace WJ
 
         public void Stop()
         {
+            move = false;
             currentDirection = Vector3.zero;
             transform.position = new Vector3(transform.position.x,baseHeight,transform.position.z);
         }
@@ -82,12 +93,14 @@ namespace WJ
 
         public void Throw(Vector3 dir,float force = 1.0f)
         {
+            move = true;
             currentDirection = dir * force;
             throwMode = ThrowMode.Throw;
         }
 
         public void Lobs(Vector3 dir,float force = 1.0f)
         {
+            move = true;
             currentDirection = dir * force * 0.5f;
             throwMode =ThrowMode.Lobs;
         }

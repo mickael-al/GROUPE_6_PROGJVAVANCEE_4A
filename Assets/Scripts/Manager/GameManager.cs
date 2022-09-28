@@ -42,7 +42,11 @@ namespace WJ
         private static int indiceMap = 0; 
         private static int indicePlayerLeft = 0;
         private static int indicePlayerRight = 0;
-        private static CharacterMode characterModeRight = CharacterMode.Player; 
+        private static CharacterMode characterModeRight = CharacterMode.RandomBot; 
+
+        public FrisbieController Frisbie{
+            get{return frisbie;}
+        }
 
         public Vector2 TerrainSize
         {
@@ -126,15 +130,22 @@ namespace WJ
 
         public void InitGame()
         {
+            frisbie = Instantiate(friesbeeObject,Vector3.zero,Quaternion.identity).GetComponent<FrisbieController>();
+            frisbie.Reset();
             Instantiate(mapObject[indiceMap],Vector3.zero,Quaternion.identity);
             characterLeft = Instantiate(prefabCharcterObject,characterPosition[0],Quaternion.identity);
             InitCharacter(characterLeft,RessourceManager.Instance.CharacterInfos[indicePlayerLeft],Faction.Left);
             characterRight = Instantiate(prefabCharcterObject,characterPosition[1],Quaternion.identity);
             InitCharacter(characterRight,RessourceManager.Instance.CharacterInfos[indicePlayerRight],Faction.Right);
-            frisbie = Instantiate(friesbeeObject,Vector3.zero,Quaternion.identity).GetComponent<FrisbieController>();
-            frisbie.Reset();
             StartThrow(Random.Range(0,2) == 0 ? Faction.Left : Faction.Right);
             SeeCursor(false);
+            CharacterCanMove(true);
+        }
+
+        public void CharacterCanMove(bool state)
+        {
+            characterLeft.GetComponent<Character>().CanMove = state;
+            characterRight.GetComponent<Character>().CanMove = state;
         }
 
         public void InitCharacter(GameObject obj,CharacterInfo ci,Faction f)
@@ -171,12 +182,14 @@ namespace WJ
         public IEnumerator ResetWin(Faction f)
         {
             frisbie.Reset();
+            CharacterCanMove(false);
             ResetPlayerPosition();   
             if(gameTime > 1.5f)
             {
                 yield return new WaitForSeconds(1.5f);
                 StartThrow(f);
             }
+            CharacterCanMove(true);
         }
 
         public void ResetPlayerPosition()
@@ -217,6 +230,7 @@ namespace WJ
         public IEnumerator WinResetRound()
         {
             frisbie.Reset();
+            CharacterCanMove(false);
             ResetPlayerPosition(); 
             if(scoreLeft > scoreRight)
             {
@@ -247,6 +261,7 @@ namespace WJ
                 endGame = false;
                 StartThrow(Random.Range(0,2) == 0 ? Faction.Left : Faction.Right);
             }
+            CharacterCanMove(true);
         }
 
         public bool isWinBO3(out Faction faction)

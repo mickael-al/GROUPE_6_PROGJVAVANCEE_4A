@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: CI_1
   m_EditorClassIdentifier: 
   texture: {fileID: 2800000, guid: 8d7661d9c09a48649a2e8ce28871b0de, type: 3}
-  characterPercent: 0.8
+  characterPercent: 0.5

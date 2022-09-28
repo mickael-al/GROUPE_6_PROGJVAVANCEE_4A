@@ -107,6 +107,24 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Test"",
+                    ""type"": ""Value"",
+                    ""id"": ""ac765851-03dc-496d-971a-26c34d441602"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""TestP2"",
+                    ""type"": ""Value"",
+                    ""id"": ""958f1818-e395-4f15-bacd-21386f1050df"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -124,7 +142,7 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
                 {
                     ""name"": ""ZQSD"",
                     ""id"": ""00ca640b-d935-4593-8157-c05846ea39b3"",
-                    ""path"": ""Dpad"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -133,59 +151,48 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""up"",
+                    ""name"": ""Up"",
                     ""id"": ""e2062cb9-1b15-46a2-838c-2f8d72a0bdd9"",
-                    ""path"": ""<Keyboard>/z"",
+                    ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""down"",
+                    ""name"": ""Down"",
                     ""id"": ""320bffee-a40b-4347-ac70-c210eb8bc73a"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""left"",
-                    ""id"": ""d2581a9b-1d11-4566-b27d-b92aff5fabbc"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""name"": ""Left"",
+                    ""id"": ""6585621d-accb-47db-b7ff-5755f7228079"",
+                    ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""right"",
-                    ""id"": ""fcfe95b8-67b9-4526-84b5-5d0bc98d6400"",
+                    ""name"": ""Right"",
+                    ""id"": ""ec04caa7-de23-4a1a-a376-5880a5e29df6"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1635d3fe-58b6-4ba9-a4e2-f4b964f6b5c8"",
-                    ""path"": ""<XRController>/{Primary2DAxis}"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""XR"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
@@ -265,9 +272,9 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""ZQSD"",
+                    ""name"": ""Arrow"",
                     ""id"": ""de6f37a3-de20-41ce-8438-e96efbbfd1d7"",
-                    ""path"": ""Dpad"",
+                    ""path"": ""Dpad(mode=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -373,6 +380,138 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3728a2be-ec08-410d-9d48-9bb1f255fd35"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Test"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""91a9cd01-8c23-4ad3-b911-0aaf058cafc4"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Test"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Up"",
+                    ""id"": ""260bb60e-4288-46f6-a385-0c152356ec25"",
+                    ""path"": ""<Keyboard>/u"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Test"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Down"",
+                    ""id"": ""8928f0d8-c5ed-4a3e-b313-52727fcd2824"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Test"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Left"",
+                    ""id"": ""21a612d1-8b1b-4a14-a012-a6018115186d"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Test"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Right"",
+                    ""id"": ""c2d5d1c1-c3c9-4151-bd3e-47f03d3f15b7"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Test"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f8487575-6d83-4c4b-b4fe-f8e3e5790287"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TestP2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""00955b78-0a3c-4e3e-be1a-b6db604ab9ec"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TestP2"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""6745c576-e1c5-4739-a053-a6794f14ff9b"",
+                    ""path"": ""<Keyboard>/numpad8"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TestP2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""0bf50123-339f-4081-bce9-83d1492a4c40"",
+                    ""path"": ""<Keyboard>/numpad5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TestP2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Left"",
+                    ""id"": ""0ee8743b-6780-4e6f-9f73-9490d68afcc6"",
+                    ""path"": ""<Keyboard>/numpad6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TestP2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Right"",
+                    ""id"": ""18b85a37-ccfc-4300-a4c8-1951b6aefa4e"",
+                    ""path"": ""<Keyboard>/numpad4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TestP2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -967,6 +1106,8 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
         m_Player_LobsP2 = m_Player.FindAction("LobsP2", throwIfNotFound: true);
         m_Player_DashP2 = m_Player.FindAction("DashP2", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        m_Player_Test = m_Player.FindAction("Test", throwIfNotFound: true);
+        m_Player_TestP2 = m_Player.FindAction("TestP2", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1047,6 +1188,8 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_LobsP2;
     private readonly InputAction m_Player_DashP2;
     private readonly InputAction m_Player_Pause;
+    private readonly InputAction m_Player_Test;
+    private readonly InputAction m_Player_TestP2;
     public struct PlayerActions
     {
         private @MCTS_Windjammers m_Wrapper;
@@ -1060,6 +1203,8 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
         public InputAction @LobsP2 => m_Wrapper.m_Player_LobsP2;
         public InputAction @DashP2 => m_Wrapper.m_Player_DashP2;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
+        public InputAction @Test => m_Wrapper.m_Player_Test;
+        public InputAction @TestP2 => m_Wrapper.m_Player_TestP2;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1096,6 +1241,12 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
                 @Pause.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
                 @Pause.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @Test.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTest;
+                @Test.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTest;
+                @Test.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTest;
+                @TestP2.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTestP2;
+                @TestP2.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTestP2;
+                @TestP2.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTestP2;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1127,6 +1278,12 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
+                @Test.started += instance.OnTest;
+                @Test.performed += instance.OnTest;
+                @Test.canceled += instance.OnTest;
+                @TestP2.started += instance.OnTestP2;
+                @TestP2.performed += instance.OnTestP2;
+                @TestP2.canceled += instance.OnTestP2;
             }
         }
     }
@@ -1292,6 +1449,8 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
         void OnLobsP2(InputAction.CallbackContext context);
         void OnDashP2(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnTest(InputAction.CallbackContext context);
+        void OnTestP2(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

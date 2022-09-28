@@ -1684,7 +1684,7 @@ MonoBehaviour:
   mapObject:
   - {fileID: 7978948779762951053, guid: fe418f8df520f874b9351a75ac308a3a, type: 3}
   - {fileID: 4175930626196146694, guid: 4150709929d4e6b4e9140825a97ecf46, type: 3}
-  RoundMaxTime: 5
+  RoundMaxTime: 90
   terrainSize: {x: 20, y: 10}
   characterPosition:
   - {x: -6, y: 3, z: 0}
