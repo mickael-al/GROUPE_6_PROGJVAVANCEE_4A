@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WJ_MCTS;
 
 namespace WJ
 {
@@ -8,101 +9,80 @@ namespace WJ
     {
         [SerializeField] private float rayon = 0.5f;
         [SerializeField] private float baseHeight = 4.0f;  
-        private Vector3 currentDirection;
-        private ThrowMode throwMode = ThrowMode.Throw;
-        private Vector2 terrainCalcule;
+        private Vector2 terrainCalculeFrisbie;
+        private GameState gameState = null;
 
-        private bool move = false;
-
-        public Vector3 CurrentDirection
+        public void InitFrisbie(Vector2 terrainSize,GameState data)
         {
-            get
-            {
-                return currentDirection;
-            }
-        } 
-
-        public bool Moves
-        {
-            get
-            {
-                return move;
-            }
+            terrainCalculeFrisbie = terrainSize/2.0f;
+            gameState = data;
+            Reset(data.FrisbiData);
         }
 
-        public float Rayon
+        public void Stop(FrisbiData data)
         {
-            get
-            {
-                return rayon;
-            }
+            data.move = false;
+            data.currentDirection = Vector3.zero;
+            data.position = new Vector3(transform.position.x,baseHeight,transform.position.z);
         }
-
-        public void Stop()
-        {
-            move = false;
-            currentDirection = Vector3.zero;
-            transform.position = new Vector3(transform.position.x,baseHeight,transform.position.z);
-        }
-
-        public void Start()
-        {
-            terrainCalcule = GameManager.Instance.TerrainSize/2.0f;
-        }
-
         public void Update()
         {
-            if(throwMode == ThrowMode.Throw)
-            {
-                transform.Translate(currentDirection*Time.deltaTime);
-            }
-            BoardCollision();
+            transform.position = gameState.FrisbiData.position;
         }
 
-        private void BoardCollision()
+        public void TranslatePosition(float dt,GameState data)
         {
-            if((terrainCalcule.y)-rayon < transform.position.z)
+            if(data.FrisbiData.throwMode == ThrowMode.Throw)
             {
-                currentDirection.z = -currentDirection.z;                
-                transform.position = new Vector3(transform.position.x,transform.position.y,(terrainCalcule.y)-rayon);
+                data.FrisbiData.position += data.FrisbiData.currentDirection*dt;
             }
-            if(-(terrainCalcule.y)+rayon > transform.position.z)
+            BoardCollisionFrisbie(data.FrisbiData,data);
+        }
+
+        public void BoardCollisionFrisbie(FrisbiData data,GameState gameState)
+        {
+            if((terrainCalculeFrisbie.y)-rayon < data.position.z)
             {
-                currentDirection.z = -currentDirection.z; 
-                transform.position = new Vector3(transform.position.x,transform.position.y,-(terrainCalcule.y)+rayon);
+                data.currentDirection.z = -data.currentDirection.z;                
+                data.position = new Vector3(data.position.x,data.position.y,(terrainCalculeFrisbie.y)-rayon);
             }
-            if((terrainCalcule.x)-rayon < transform.position.x)
+            if(-(terrainCalculeFrisbie.y)+rayon > data.position.z)
             {
-                currentDirection.x = -currentDirection.x;
-                transform.position = new Vector3((terrainCalcule.x/2.0f)-rayon,transform.position.y,transform.position.z);
-                GameManager.Instance.AddScorePoint(Faction.Left, (((terrainCalcule.y)*(1/2.5f))-rayon < transform.position.z || (-((terrainCalcule.y)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
+                data.currentDirection.z = -data.currentDirection.z; 
+                data.position = new Vector3(data.position.x,data.position.y,-(terrainCalculeFrisbie.y)+rayon);
             }
-            if(-(terrainCalcule.x)+rayon > transform.position.x)
+            if((terrainCalculeFrisbie.x)-rayon < data.position.x)
             {
-                currentDirection.x = -currentDirection.x;
-                transform.position = new Vector3(-(terrainCalcule.x)+rayon,transform.position.y,transform.position.z);
-                GameManager.Instance.AddScorePoint(Faction.Right, (((terrainCalcule.y)*(1/2.5f))-rayon < transform.position.z || (-((terrainCalcule.y)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
+                data.currentDirection.x = -data.currentDirection.x;
+                data.position = new Vector3((terrainCalculeFrisbie.x/2.0f)-rayon,data.position.y,data.position.z);
+                GameManager.Instance.AddScorePoint(gameState,Faction.Left, (((terrainCalculeFrisbie.y)*(1/2.5f))-rayon < data.position.z || (-((terrainCalculeFrisbie.y)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
+            }
+            if(-(terrainCalculeFrisbie.x)+rayon > data.position.x)
+            {
+                data.currentDirection.x = -data.currentDirection.x;
+                data.position = new Vector3(-(terrainCalculeFrisbie.x)+rayon,data.position.y,data.position.z);
+                GameManager.Instance.AddScorePoint(gameState,Faction.Right, (((terrainCalculeFrisbie.y)*(1/2.5f))-rayon < data.position.z || (-((terrainCalculeFrisbie.y)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
             }
         }
 
-        public void Reset()
+        public void Reset(FrisbiData data)
         {
-            Stop();
-            transform.position = new Vector3(0,baseHeight,-(terrainCalcule.y)+rayon);
+            Stop(data);
+            data.position = new Vector3(0,baseHeight,-(terrainCalculeFrisbie.y)+rayon);
         }
 
-        public void Throw(Vector3 dir,float force = 1.0f)
+        public void Throw(FrisbiData data,Vector3 dir,float force = 1.0f)
         {
-            move = true;
-            currentDirection = dir * force;
-            throwMode = ThrowMode.Throw;
+            data.move = true;
+            data.currentDirection = dir * force;
+            data.throwMode = ThrowMode.Throw;
         }
 
-        public void Lobs(Vector3 dir,float force = 1.0f)
+        public void Lobs(FrisbiData data,Vector3 dir,float force = 1.0f)
         {
-            move = true;
-            currentDirection = dir * force * 0.5f;
-            throwMode =ThrowMode.Lobs;
+            data.move = true;
+            data.currentDirection = dir * force * 0.5f;
+            data.throwMode =ThrowMode.Lobs;
         }
     }
 }

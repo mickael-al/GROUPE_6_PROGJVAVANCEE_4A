@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.InputSystem;
 using WJ_Controller;
 using UnityEngine.SceneManagement;
+using WJ_MCTS;
 
 namespace WJ
 {
@@ -17,18 +18,16 @@ namespace WJ
         [SerializeField] private Vector2 terrainSize = new Vector2(20.0f,10.0f);
         [SerializeField] private Vector3[] characterPosition = {new Vector3(0,0,0),new Vector3(0,0,0)};
         [SerializeField] private int maxScoreToSet = 24;
+        private GameState gameState;
         private FrisbieController frisbie = null;       
-        private GameObject characterLeft = null; 
-        private GameObject characterRight = null;
-        private bool endGame = false;
-        private float gameTime = 0.0f;
-        private int lastgameTime = 0;
-        private int scoreRight = 0;
-        private int scoreLeft = 0;
-        private int SetLeftCount = 0;
-        private int SetRightCount = 0;
-        private int round = 0;
-        private bool pauseGame = false;
+        private Character characterLeft = null; 
+        private Character characterRight = null;
+
+        #region Getter
+        public FrisbieController Frisbie { get {return frisbie;} }
+        public Character CharacterLeft { get {return characterLeft;} }
+        public Character CharacterRight { get {return characterRight;} }
+        #endregion 
 
         [Header("Interface")]
         [SerializeField] private TextMeshProUGUI timeText = null;
@@ -39,21 +38,16 @@ namespace WJ
         [SerializeField] private GameObject winObj = null;
         [SerializeField] private TextMeshProUGUI textRoundScoreLeft = null;
         [SerializeField] private TextMeshProUGUI textRoundScoreRight = null;
+        private int lastgameTime = 0;
+        private int characterId = 0;
+        private bool pauseGame = false;
 
+        #region dataStatic
         private static int indiceMap = 0; 
         private static int indicePlayerLeft = 0;
         private static int indicePlayerRight = 0;
         private static CharacterMode characterModeRight = CharacterMode.RandomBot; 
-
-        public FrisbieController Frisbie{
-            get{return frisbie;}
-        }
-
-        public Vector2 TerrainSize
-        {
-            get{return terrainSize;}
-        }
-
+        
         public static int IndicePlayerLeft
         {
             get{return indicePlayerLeft;}
@@ -77,49 +71,47 @@ namespace WJ
             get{return characterModeRight;}
             set{characterModeRight = value;}
         }
+        #endregion
 
-        public void AddScorePoint(Faction f,int value = 1)
+        public void AddScorePoint(GameState gs, Faction f,int value = 1)
         {
             if(Faction.Left == f)
             {
-                scoreLeft+=value;
+                gs.GameManagerData.scoreLeft+=value;
             }
             else
             {
-                scoreRight+=value;
+                gs.GameManagerData.scoreRight+=value;
             }
-            MajUIScore();
-            StartCoroutine(ResetWin(f));
+            if(gs.GameManagerData.isCurrentGame)
+            {
+                MajUIScore(gs.GameManagerData);
+            }
+            ResetWin(gs,f);
         }
 
-        private void MajUIScore()
+        private void MajUIScore(GameManagerData data)
         {
-            scoreLeftText.text = scoreLeft.ToString("00");
-            scoreRightText.text = scoreRight.ToString("00");
+            scoreLeftText.text = data.scoreLeft.ToString("00");
+            scoreRightText.text = data.scoreRight.ToString("00");
         }
         public static GameManager Instance
         {
-            get
-            {
-                return instance;
-            }
+            get{return instance;}
         }
 
         private static GameManager instance = null;
-
-
 
         protected override void Awake()
         {
             base.Awake();
             instance = this;
-            gameTime = RoundMaxTime;
-            endGame = false;
         }
 
         public void Start()
         {
             InputManager.InputJoueur.Player.Pause.performed += PauseGame;
+            InitData();
             InitGame();
         }
 
@@ -129,27 +121,35 @@ namespace WJ
             InputManager.InputJoueur.Player.Pause.performed -= PauseGame;
         }
 
+        public void InitData()
+        {
+            gameState.GameManagerData.gameTime = RoundMaxTime;
+            gameState.GameManagerData.endSet = false;
+            gameState.GameManagerData.endGame = false;
+            gameState.GameManagerData.isCurrentGame = true;
+        }
+
         public void InitGame()
         {
             frisbie = Instantiate(friesbeeObject,Vector3.zero,Quaternion.identity).GetComponent<FrisbieController>();
-            frisbie.Reset();
+            frisbie.InitFrisbie(terrainSize,gameState);
             Instantiate(mapObject[indiceMap],Vector3.zero,Quaternion.identity);
-            characterLeft = Instantiate(prefabCharcterObject,characterPosition[0],Quaternion.identity);
-            InitCharacter(characterLeft,RessourceManager.Instance.CharacterInfos[indicePlayerLeft],Faction.Left);
-            characterRight = Instantiate(prefabCharcterObject,characterPosition[1],Quaternion.identity);
-            InitCharacter(characterRight,RessourceManager.Instance.CharacterInfos[indicePlayerRight],Faction.Right);
-            StartThrow(Random.Range(0,2) == 0 ? Faction.Left : Faction.Right);
+            characterLeft = InitCharacter(
+                Instantiate(prefabCharcterObject,characterPosition[characterId],Quaternion.identity),
+                RessourceManager.Instance.CharacterInfos[indicePlayerLeft],
+                Faction.Left,
+                characterPosition[characterId]);
+            characterRight = InitCharacter(
+                Instantiate(prefabCharcterObject,characterPosition[characterId],Quaternion.identity),
+                RessourceManager.Instance.CharacterInfos[indicePlayerRight],
+                Faction.Right,
+                characterPosition[characterId]);
+            StartThrow(gameState,Random.Range(0,2) == 0 ? Faction.Left : Faction.Right);
             SeeCursor(false);
             CharacterCanMove(true);
         }
 
-        public void CharacterCanMove(bool state)
-        {
-            characterLeft.GetComponent<Character>().CanMove = state;
-            characterRight.GetComponent<Character>().CanMove = state;
-        }
-
-        public void InitCharacter(GameObject obj,CharacterInfo ci,Faction f)
+        public Character InitCharacter(GameObject obj,CharacterInfo ci,Faction f,Vector3 spawnPosition)
         {
             Character p = null;
             if(f == Faction.Left || characterModeRight == CharacterMode.Player)
@@ -164,7 +164,15 @@ namespace WJ
             {
                 p = obj.AddComponent<MCTSBot>();             
             }
-            p.InitCharacter(ci,f);
+            gameState.CharacterDataDictionary[characterId++] = new KeyValuePair<Character,CharacterData>(p,new CharacterData());
+            p.InitCharacter(ci,gameState,f,terrainSize,spawnPosition);
+            return p;
+        }
+
+        public void CharacterCanMove(bool state)
+        {
+            //characterLeft.CanMove = state;
+            //characterRight.CanMove = state;
         }
 
         public void SeeCursor(bool state)
@@ -180,39 +188,39 @@ namespace WJ
             }
         }
 
-        public IEnumerator ResetWin(Faction f)
+        public void ResetWin(GameState gs,Faction f)
         {
-            frisbie.Reset();
+            frisbie.Reset(gs.FrisbiData);
             CharacterCanMove(false);
-            ResetPlayerPosition();   
-            if(gameTime > 1.5f)
+            ResetPlayerPosition(gs);
+            /*if(gs.GameManagerData.gameTime > 1.5f)
             {
                 yield return new WaitForSeconds(1.5f);
                 StartThrow(f);
             }
-            CharacterCanMove(true);
+            CharacterCanMove(true);*/
         }
 
-        public void ResetPlayerPosition()
+        public void ResetPlayerPosition(GameState gs)
         {
-            characterLeft.GetComponent<Character>().ResetSpawnPosition();
-            characterRight.GetComponent<Character>().ResetSpawnPosition();
+            characterLeft.ResetSpawnPosition(gs);
+            characterRight.ResetSpawnPosition(gs);
         }
 
 
-        public void StartThrow(Faction f)
+        public void StartThrow(GameState gs,Faction f)
         {
             Vector3 dir;
             if(f == Faction.Left)
             {
-                dir = (characterLeft.transform.position-frisbie.transform.position).normalized;
+                dir = (gs.CharacterDataDictionary[0].Value.position-gs.FrisbiData.position).normalized;
             }
             else
             {
-                dir = (characterRight.transform.position-frisbie.transform.position).normalized;
+                dir = (gs.CharacterDataDictionary[1].Value.position-gs.FrisbiData.position).normalized;
             }
             dir.y = 0;
-            frisbie.Throw(dir,10.0f);
+            frisbie.Throw(gs.FrisbiData,dir,10.0f);
         }
 
         public void BackMenu()
@@ -228,51 +236,52 @@ namespace WJ
             SceneManager.LoadScene("Menu",LoadSceneMode.Single);
         }
 
-        public IEnumerator WinResetRound()
+        public void WinResetRound(GameState gs)
         {
-            frisbie.Reset();
-            CharacterCanMove(false);
-            ResetPlayerPosition(); 
-            if(scoreLeft > scoreRight)
+            frisbie.Reset(gs.FrisbiData);
+            ResetPlayerPosition(gs); 
+            if(gs.GameManagerData.scoreLeft > gs.GameManagerData.scoreRight)
             {
-                SetLeftCount++;
+                gs.GameManagerData.SetLeftCount++;
             }
-            else if(scoreRight > scoreLeft)
+            else if(gs.GameManagerData.scoreRight > gs.GameManagerData.scoreLeft)
             {
-                SetRightCount++;
+                gs.GameManagerData.SetRightCount++;
             }
-            scoreRight = 0;
-            scoreLeft = 0;
-            textRoundScoreLeft.text = SetLeftCount.ToString("00");
-            textRoundScoreRight.text = SetRightCount.ToString("00");
-            MajUIScore();
-            roundSetObject.SetActive(true);
+            gs.GameManagerData.scoreRight = 0;
+            gs.GameManagerData.scoreLeft = 0;
+            if(gs.GameManagerData.isCurrentGame)
+            {
+                MajUIScore(gs.GameManagerData);
+                textRoundScoreLeft.text = gs.GameManagerData.SetLeftCount.ToString("00");
+                textRoundScoreRight.text = gs.GameManagerData.SetRightCount.ToString("00");
+                roundSetObject.SetActive(true);
+            }
             Faction f;
-            if(isWinBO3(out f))
+            if(isWinBO3(gs.GameManagerData,out f))
             {
-                winObj.SetActive(true);
-                yield return new WaitForSeconds(4.0f);
-                BackMenu();
+                gs.GameManagerData.timeNextSet = 4.0f;
+                gs.GameManagerData.endGame = true;
+                if(gs.GameManagerData.isCurrentGame)
+                {
+                    winObj.SetActive(true);
+                }
             }
             else
             {
-                yield return new WaitForSeconds(2.0f);
-                roundSetObject.SetActive(false);
-                gameTime = RoundMaxTime;
-                endGame = false;
-                StartThrow(Random.Range(0,2) == 0 ? Faction.Left : Faction.Right);
+                gs.GameManagerData.timeNextSet = 2.0f;
+                gs.GameManagerData.endSet = true;
             }
-            CharacterCanMove(true);
         }
 
-        public bool isWinBO3(out Faction faction)
+        public bool isWinBO3(GameManagerData gameManagerData, out Faction faction)
         {
-            if(SetLeftCount == 3 || (SetLeftCount == 2 && SetRightCount == 0))
+            if(gameManagerData.SetLeftCount == 3 || (gameManagerData.SetLeftCount == 2 && gameManagerData.SetRightCount == 0))
             {
                 faction = Faction.Left;
                 return true;
             }
-            else if(SetRightCount == 3 || (SetRightCount == 2 && SetLeftCount == 0))
+            else if(gameManagerData.SetRightCount == 3 || (gameManagerData.SetRightCount == 2 && gameManagerData.SetLeftCount == 0))
             {
                 faction = Faction.Right;
                 return true;
@@ -290,18 +299,50 @@ namespace WJ
             GamePauseManager.Instance.SetPause(pauseGame ? GamePause.Pause : GamePause.GamePlay);
         }
 
+        public void Simulate(ref GameState gameState,float dt)
+        {
+            if(gameState.GameManagerData.endGame && gameState.GameManagerData.timeNextSet < 0.0f) {return;}
+            gameState.GameManagerData.gameTime -= dt;
+            gameState.GameManagerData.timeNextSet -= dt;
+            if(!gameState.GameManagerData.endSet && gameState.GameManagerData.gameTime <= 0.0f || gameState.GameManagerData.scoreLeft >= maxScoreToSet || gameState.GameManagerData.scoreRight >= maxScoreToSet)
+            {
+                gameState.GameManagerData.endSet = true;
+                if(gameState.GameManagerData.isCurrentGame)
+                {
+                    timeText.text = "00";
+                }
+                WinResetRound(gameState);
+            }
+            if(gameState.GameManagerData.endSet && gameState.GameManagerData.timeNextSet <= 0.0f)
+            {
+                Faction f;
+                if(isWinBO3(gameState.GameManagerData,out f))
+                {
+                    if(gameState.GameManagerData.isCurrentGame)
+                    {
+                        BackMenu();
+                    }
+                }
+                else
+                {
+                    if(gameState.GameManagerData.isCurrentGame)
+                    {
+                        roundSetObject.SetActive(false);
+                    }
+                    gameState.GameManagerData.gameTime = RoundMaxTime;
+                    gameState.GameManagerData.endSet = false;
+                    StartThrow(gameState,f == Faction.Left ? Faction.Right : Faction.Left);
+                }
+                CharacterCanMove(true);
+            }
+        }
+
         void Update()
         {
-            gameTime -= Time.deltaTime;
-            if(!endGame && gameTime <= 0.0f || scoreLeft >= maxScoreToSet || scoreRight >= maxScoreToSet)
+            Simulate(ref gameState,Time.deltaTime);
+            if(!gameState.GameManagerData.endSet && lastgameTime != (int)gameState.GameManagerData.gameTime)
             {
-                endGame = true;
-                timeText.text = "00";
-                StartCoroutine(WinResetRound());
-            }
-            if(!endGame && lastgameTime != (int)gameTime)
-            {
-                lastgameTime = (int)gameTime;
+                lastgameTime = (int)gameState.GameManagerData.gameTime;
                 timeText.text = lastgameTime.ToString("00");
             }
         }

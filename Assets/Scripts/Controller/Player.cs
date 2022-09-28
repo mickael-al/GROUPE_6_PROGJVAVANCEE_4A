@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using WJ;
 using UnityEngine.InputSystem;
+using WJ_MCTS;
 
 namespace WJ_Controller
 {
@@ -23,9 +24,9 @@ namespace WJ_Controller
 
         }
 
-        public override void InitCharacter(WJ.CharacterInfo ci,Faction f)
+        public override void InitCharacter(WJ.CharacterInfo ci,GameState gs,Faction f,Vector2 terrainSize,Vector3 spawnPos)
         {
-            base.InitCharacter(ci,f);
+            base.InitCharacter(ci,gs,f,terrainSize,spawnPos);
             if(faction == Faction.Left)
             {
                 InputManager.InputJoueur.Player.Fire.performed += Action1;
@@ -55,7 +56,7 @@ namespace WJ_Controller
 
         public override void Update()
         {
-            if(!canMove || !isInit || handObject)
+            if(!canMove || handObject)
             {
                 return;
             }
