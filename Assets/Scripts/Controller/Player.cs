@@ -13,7 +13,7 @@ namespace WJ_Controller
         {
             if(handObject)
             {
-                frisbie.Throw((Faction.Left == faction ? Vector3.right + new Vector3(0,0,InputManager.InputJoueur.Player.Test.ReadValue<Vector2>().y):Vector3.left+ new Vector3(0,0,-InputManager.InputJoueur.Player.TestP2.ReadValue<Vector2>().y)),Strength);
+                frisbie.Throw((Faction.Left == faction ? Vector3.right + new Vector3(0,0,InputManager.InputJoueur.Player.Move.ReadValue<Vector2>().y):Vector3.left+ new Vector3(0,0,-InputManager.InputJoueur.Player.MoveP2.ReadValue<Vector2>().y)),Strength);
                 handObject = false;
             }
         }
@@ -61,11 +61,11 @@ namespace WJ_Controller
             }
             if(faction == Faction.Left)
             {
-                moveDesired = InputManager.InputJoueur.Player.Test.ReadValue<Vector2>();
+                moveDesired = InputManager.InputJoueur.Player.Move.ReadValue<Vector2>();
             }
             else
             {
-                moveDesired = InputManager.InputJoueur.Player.TestP2.ReadValue<Vector2>();
+                moveDesired = InputManager.InputJoueur.Player.MoveP2.ReadValue<Vector2>();
             }
             transform.Translate(new Vector3(-moveDesired.y,0,moveDesired.x)*Time.deltaTime*Speed);
             BoardCollision();
