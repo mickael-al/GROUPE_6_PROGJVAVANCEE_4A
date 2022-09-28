@@ -16,6 +16,7 @@ namespace WJ
         [SerializeField] private float RoundMaxTime = 90.0f;
         [SerializeField] private Vector2 terrainSize = new Vector2(20.0f,10.0f);
         [SerializeField] private Vector3[] characterPosition = {new Vector3(0,0,0),new Vector3(0,0,0)};
+        [SerializeField] private int maxScoreToSet = 24;
         private FrisbieController frisbie = null;       
         private GameObject characterLeft = null; 
         private GameObject characterRight = null;
@@ -292,7 +293,7 @@ namespace WJ
         void Update()
         {
             gameTime -= Time.deltaTime;
-            if(!endGame && gameTime <= 0.0f)
+            if(!endGame && gameTime <= 0.0f || scoreLeft >= maxScoreToSet || scoreRight >= maxScoreToSet)
             {
                 endGame = true;
                 timeText.text = "00";
