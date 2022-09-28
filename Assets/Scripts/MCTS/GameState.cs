@@ -7,12 +7,12 @@ namespace WJ_MCTS
 {
     public class GameState 
     {
-        private GameManagerData gameManagerData;
-        private FrisbiData frisbiData;
-        private KeyValuePair<Character,CharacterData>[] characterData = new KeyValuePair<Character,CharacterData>[2];
+        private GameManagerData gameManagerData = new GameManagerData();
+        private FrisbiData frisbiData = new FrisbiData();
+        private CharacterData[] characterData = new CharacterData[2];
 
         #region Getter
-        public  KeyValuePair<Character,CharacterData>[] CharacterDataDictionary { get {return characterData;} }
+        public  CharacterData[] characterDatas { get {return characterData;} }
         public GameManagerData GameManagerData { get {return gameManagerData;} }
         public FrisbiData FrisbiData { get {return frisbiData;} }
         #endregion

@@ -9,14 +9,10 @@ namespace WJ_Controller
 {
     public class Player : Character
     {
-        private Vector2 moveDesired = Vector2.zero;
+        private Vector2 moveDir;
         public void Action1(InputAction.CallbackContext ctx)
         {
-            if(handObject)
-            {
-                frisbie.Throw((Faction.Left == faction ? Vector3.right + new Vector3(0,0,InputManager.InputJoueur.Player.Move.ReadValue<Vector2>().y):Vector3.left+ new Vector3(0,0,-InputManager.InputJoueur.Player.MoveP2.ReadValue<Vector2>().y)),Strength);
-                handObject = false;
-            }
+            base.Action1(gameState,(Faction.Left == faction ? Vector3.right + new Vector3(0,0,InputManager.InputJoueur.Player.Move.ReadValue<Vector2>().y):Vector3.left+ new Vector3(0,0,-InputManager.InputJoueur.Player.MoveP2.ReadValue<Vector2>().y)));
         }
 
         public void Action2(InputAction.CallbackContext ctx)
@@ -56,21 +52,17 @@ namespace WJ_Controller
 
         public override void Update()
         {
-            if(!canMove || handObject)
-            {
-                return;
-            }
+            base.Update();
             if(faction == Faction.Left)
             {
-                moveDesired = InputManager.InputJoueur.Player.Move.ReadValue<Vector2>();
+                moveDir = InputManager.InputJoueur.Player.Move.ReadValue<Vector2>();
             }
             else
             {
-                moveDesired = InputManager.InputJoueur.Player.MoveP2.ReadValue<Vector2>();
+                moveDir = InputManager.InputJoueur.Player.MoveP2.ReadValue<Vector2>();
             }
-            transform.Translate(new Vector3(-moveDesired.y,0,moveDesired.x)*Time.deltaTime*Speed);
-            BoardCollision();
-            TakeFrisbie();
+            base.gameState.characterDatas[factionId].currentDirection = new Vector3(moveDir.y,-moveDir.x);
         }
+
     }
 }

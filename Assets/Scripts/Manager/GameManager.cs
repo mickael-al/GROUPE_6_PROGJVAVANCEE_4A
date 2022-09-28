@@ -18,7 +18,8 @@ namespace WJ
         [SerializeField] private Vector2 terrainSize = new Vector2(20.0f,10.0f);
         [SerializeField] private Vector3[] characterPosition = {new Vector3(0,0,0),new Vector3(0,0,0)};
         [SerializeField] private int maxScoreToSet = 24;
-        private GameState gameState;
+        [SerializeField] private float deltaBehaviour = 0.2f;
+        private GameState gameState = new GameState();
         private FrisbieController frisbie = null;       
         private Character characterLeft = null; 
         private Character characterRight = null;
@@ -27,6 +28,7 @@ namespace WJ
         public FrisbieController Frisbie { get {return frisbie;} }
         public Character CharacterLeft { get {return characterLeft;} }
         public Character CharacterRight { get {return characterRight;} }
+        public float DeltaBehaviour { get {return deltaBehaviour;} }
         #endregion 
 
         [Header("Interface")]
@@ -39,7 +41,6 @@ namespace WJ
         [SerializeField] private TextMeshProUGUI textRoundScoreLeft = null;
         [SerializeField] private TextMeshProUGUI textRoundScoreRight = null;
         private int lastgameTime = 0;
-        private int characterId = 0;
         private bool pauseGame = false;
 
         #region dataStatic
@@ -77,11 +78,11 @@ namespace WJ
         {
             if(Faction.Left == f)
             {
-                gs.GameManagerData.scoreLeft+=value;
+                gs.GameManagerData.scoreRight+=value;
             }
             else
             {
-                gs.GameManagerData.scoreRight+=value;
+                gs.GameManagerData.scoreLeft+=value;
             }
             if(gs.GameManagerData.isCurrentGame)
             {
@@ -135,18 +136,18 @@ namespace WJ
             frisbie.InitFrisbie(terrainSize,gameState);
             Instantiate(mapObject[indiceMap],Vector3.zero,Quaternion.identity);
             characterLeft = InitCharacter(
-                Instantiate(prefabCharcterObject,characterPosition[characterId],Quaternion.identity),
+                Instantiate(prefabCharcterObject,characterPosition[0],Quaternion.identity),
                 RessourceManager.Instance.CharacterInfos[indicePlayerLeft],
                 Faction.Left,
-                characterPosition[characterId]);
+                characterPosition[0]);
             characterRight = InitCharacter(
-                Instantiate(prefabCharcterObject,characterPosition[characterId],Quaternion.identity),
+                Instantiate(prefabCharcterObject,characterPosition[1],Quaternion.identity),
                 RessourceManager.Instance.CharacterInfos[indicePlayerRight],
                 Faction.Right,
-                characterPosition[characterId]);
+                characterPosition[1]);
             StartThrow(gameState,Random.Range(0,2) == 0 ? Faction.Left : Faction.Right);
             SeeCursor(false);
-            CharacterCanMove(true);
+            CharacterCanMove(gameState,true);
         }
 
         public Character InitCharacter(GameObject obj,CharacterInfo ci,Faction f,Vector3 spawnPosition)
@@ -164,15 +165,15 @@ namespace WJ
             {
                 p = obj.AddComponent<MCTSBot>();             
             }
-            gameState.CharacterDataDictionary[characterId++] = new KeyValuePair<Character,CharacterData>(p,new CharacterData());
+            gameState.characterDatas[(int)f] = new CharacterData();
             p.InitCharacter(ci,gameState,f,terrainSize,spawnPosition);
             return p;
         }
 
-        public void CharacterCanMove(bool state)
+        public void CharacterCanMove(GameState gs,bool state)
         {
-            //characterLeft.CanMove = state;
-            //characterRight.CanMove = state;
+            gs.characterDatas[0].canMove = state;
+            gs.characterDatas[1].canMove = state;
         }
 
         public void SeeCursor(bool state)
@@ -191,14 +192,8 @@ namespace WJ
         public void ResetWin(GameState gs,Faction f)
         {
             frisbie.Reset(gs.FrisbiData);
-            CharacterCanMove(false);
             ResetPlayerPosition(gs);
-            /*if(gs.GameManagerData.gameTime > 1.5f)
-            {
-                yield return new WaitForSeconds(1.5f);
-                StartThrow(f);
-            }
-            CharacterCanMove(true);*/
+            StartThrow(gs,f);
         }
 
         public void ResetPlayerPosition(GameState gs)
@@ -211,14 +206,7 @@ namespace WJ
         public void StartThrow(GameState gs,Faction f)
         {
             Vector3 dir;
-            if(f == Faction.Left)
-            {
-                dir = (gs.CharacterDataDictionary[0].Value.position-gs.FrisbiData.position).normalized;
-            }
-            else
-            {
-                dir = (gs.CharacterDataDictionary[1].Value.position-gs.FrisbiData.position).normalized;
-            }
+            dir = (gs.characterDatas[(int)f].position-gs.FrisbiData.position).normalized;
             dir.y = 0;
             frisbie.Throw(gs.FrisbiData,dir,10.0f);
         }
@@ -240,6 +228,7 @@ namespace WJ
         {
             frisbie.Reset(gs.FrisbiData);
             ResetPlayerPosition(gs); 
+            CharacterCanMove(gs,false);
             if(gs.GameManagerData.scoreLeft > gs.GameManagerData.scoreRight)
             {
                 gs.GameManagerData.SetLeftCount++;
@@ -299,42 +288,45 @@ namespace WJ
             GamePauseManager.Instance.SetPause(pauseGame ? GamePause.Pause : GamePause.GamePlay);
         }
 
-        public void Simulate(ref GameState gameState,float dt)
+        public void Simulate(ref GameState gs,float dt)
         {
-            if(gameState.GameManagerData.endGame && gameState.GameManagerData.timeNextSet < 0.0f) {return;}
-            gameState.GameManagerData.gameTime -= dt;
-            gameState.GameManagerData.timeNextSet -= dt;
-            if(!gameState.GameManagerData.endSet && gameState.GameManagerData.gameTime <= 0.0f || gameState.GameManagerData.scoreLeft >= maxScoreToSet || gameState.GameManagerData.scoreRight >= maxScoreToSet)
+            if(gs.GameManagerData.endGame && gs.GameManagerData.timeNextSet < 0.0f) {return;}
+            gs.GameManagerData.gameTime -= dt;
+            gs.GameManagerData.timeNextSet -= dt;
+            if(!gs.GameManagerData.endSet && gs.GameManagerData.gameTime <= 0.0f || gs.GameManagerData.scoreLeft >= maxScoreToSet || gs.GameManagerData.scoreRight >= maxScoreToSet)
             {
-                gameState.GameManagerData.endSet = true;
-                if(gameState.GameManagerData.isCurrentGame)
+                gs.GameManagerData.endSet = true;
+                if(gs.GameManagerData.isCurrentGame)
                 {
                     timeText.text = "00";
                 }
-                WinResetRound(gameState);
+                WinResetRound(gs);
             }
-            if(gameState.GameManagerData.endSet && gameState.GameManagerData.timeNextSet <= 0.0f)
+            if(gs.GameManagerData.endSet && gs.GameManagerData.timeNextSet <= 0.0f)
             {
                 Faction f;
-                if(isWinBO3(gameState.GameManagerData,out f))
+                if(isWinBO3(gs.GameManagerData,out f))
                 {
-                    if(gameState.GameManagerData.isCurrentGame)
+                    if(gs.GameManagerData.isCurrentGame)
                     {
                         BackMenu();
                     }
                 }
                 else
                 {
-                    if(gameState.GameManagerData.isCurrentGame)
+                    if(gs.GameManagerData.isCurrentGame)
                     {
                         roundSetObject.SetActive(false);
                     }
-                    gameState.GameManagerData.gameTime = RoundMaxTime;
-                    gameState.GameManagerData.endSet = false;
-                    StartThrow(gameState,f == Faction.Left ? Faction.Right : Faction.Left);
+                    gs.GameManagerData.gameTime = RoundMaxTime;
+                    gs.GameManagerData.endSet = false;
+                    StartThrow(gs,f == Faction.Left ? Faction.Right : Faction.Left);
                 }
-                CharacterCanMove(true);
+                CharacterCanMove(gs,true);
             }
+            frisbie.TranslatePosition(gs,dt);
+            characterLeft.TranslatePosition(gs,dt);
+            characterRight.TranslatePosition(gs,dt);
         }
 
         void Update()

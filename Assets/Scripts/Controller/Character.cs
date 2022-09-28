@@ -11,12 +11,14 @@ namespace WJ
         protected Animator animator = null;
         protected CharacterMode characterMode;
         protected Faction faction;
+        protected int factionId = 0;
         protected float Speed;
         protected float Strength;
         protected GameState gameState = null;
         private Vector3 spawnPosition = Vector3.zero;
         protected float rayon = 1.0f;
         protected Vector2 terrainCalcule = Vector2.zero;
+        protected Vector3 workPosition;
 
         public CharacterMode CharacterMode
         {
@@ -28,73 +30,95 @@ namespace WJ
             this.terrainCalcule = terrainSize/2.0f;
             this.characterInfo = ci;
             this.faction = f;
-            transform.eulerAngles = new Vector3(0,Faction.Left == faction ? 90 : -90,0);
+            this.factionId = (int)f;
+            gs.characterDatas[factionId].turn = Faction.Left == faction ? 90 : -90;
             this.animator = transform.GetChild(0).GetComponent<Animator>();
             this.transform.GetChild(0).GetChild(0).GetComponent<SkinnedMeshRenderer>().material.SetTexture("_BaseMap",ci.Texture);
-            this.Speed = ci.CharacterPercent*25.0f;
-            this.Strength = (1.0f-ci.CharacterPercent)*25.0f;
+            this.Speed = (ci.CharacterPercent*10.0f)+10.0f;
+            this.Strength = ((1.0f-ci.CharacterPercent)*10.0f)+10.0f;
             this.gameState = gs;
             this.spawnPosition = spawnPos;
+            gs.characterDatas[factionId].position = this.spawnPosition;
         }
 
         public void ResetSpawnPosition(GameState gs)
         {
-            transform.position = spawnPosition;
-            transform.eulerAngles = new Vector3(0,Faction.Left == faction ? 90 : -90,0);
-            handObject = false;
+            gs.characterDatas[factionId].position = spawnPosition;
+            gs.characterDatas[factionId].turn = Faction.Left == faction ? 90 : -90;
+            gs.characterDatas[factionId].handObject = false;
         }
 
-        public void TakeFrisbie()
+        public void TakeFrisbie(GameState gs)
         {
-            if(frisbie.Moves && !handObject && Vector3.Distance(transform.position,frisbie.transform.position) < rayon+frisbie.Rayon)
+            float r = GameManager.Instance.Frisbie.Rayon; 
+            if(gs.FrisbiData.move && !gs.characterDatas[factionId].handObject && Vector3.Distance(gs.characterDatas[factionId].position,gs.FrisbiData.position) < rayon+r)
             {
-                handObject = true;
-                frisbie.transform.position = transform.position + (Faction.Left == faction ? Vector3.right*(rayon+frisbie.Rayon):Vector3.left*(rayon+frisbie.Rayon));
-                frisbie.Stop();
+                gs.characterDatas[factionId].handObject = true;
+                gs.FrisbiData.position = gs.characterDatas[factionId].position + (Faction.Left == faction ? Vector3.right*(rayon+r):Vector3.left*(rayon+r));
+                GameManager.Instance.Frisbie.Stop(gs.FrisbiData);
             }
         }
 
-        public void BoardCollision()
+        public void Action1(GameState state,Vector3 dir)
         {
+            if(state.characterDatas[factionId].handObject)
+            {
+                GameManager.Instance.Frisbie.Throw(state.FrisbiData,dir,Strength);
+                state.characterDatas[factionId].handObject = false;
+            }
+        }
+
+        public void BoardCollision(GameState gs)
+        {
+            workPosition = gs.characterDatas[factionId].position;
             if(Faction.Left == faction)
             {
-                if(transform.position.x < -terrainCalcule.x)
+                if(workPosition.x < -terrainCalcule.x)
                 {
-                    transform.position = new Vector3(-terrainCalcule.x,transform.position.y,transform.position.z);
+                    workPosition = new Vector3(-terrainCalcule.x,workPosition.y,workPosition.z);
                 }
-                if(transform.position.x > 0)
+                if(workPosition.x > 0)
                 {
-                    transform.position = new Vector3(0.0f,transform.position.y,transform.position.z);
+                    workPosition = new Vector3(0.0f,workPosition.y,workPosition.z);
                 }
             }
             else
             {
-                if(transform.position.x > terrainCalcule.x)
+                if(workPosition.x > terrainCalcule.x)
                 {
-                    transform.position = new Vector3(terrainCalcule.x,transform.position.y,transform.position.z);
+                    workPosition = new Vector3(terrainCalcule.x,workPosition.y,workPosition.z);
                 }
-                if(transform.position.x < 0)
+                if(workPosition.x < 0)
                 {
-                    transform.position = new Vector3(0.0f,transform.position.y,transform.position.z);
+                    workPosition = new Vector3(0.0f,workPosition.y,workPosition.z);
                 }
             }
-            if(transform.position.z > terrainCalcule.y)
+            if(workPosition.z > terrainCalcule.y)
             {
-                transform.position = new Vector3(transform.position.x,transform.position.y,terrainCalcule.y);
+                workPosition = new Vector3(workPosition.x,workPosition.y,terrainCalcule.y);
             }
-            if(transform.position.z < -terrainCalcule.y)
+            if(workPosition.z < -terrainCalcule.y)
             {
-                transform.position = new Vector3(transform.position.x,transform.position.y,-terrainCalcule.y);
+                workPosition = new Vector3(workPosition.x,workPosition.y,-terrainCalcule.y);
             }
+            gs.characterDatas[factionId].position = workPosition;
+        }
+
+        public void TranslatePosition(GameState gs,float dt)
+        {
+            TakeFrisbie(gs);
+            if(!gs.characterDatas[factionId].canMove || gs.characterDatas[factionId].handObject)
+            {
+                return;
+            }
+            gs.characterDatas[factionId].position += new Vector3(-gs.characterDatas[factionId].currentDirection.y,0,gs.characterDatas[factionId].currentDirection.x)*dt*Speed;
+            BoardCollision(gs);
         }
 
         public virtual void Update()
         {
-            if(!canMove)
-            {
-                return;
-            }
-
+            transform.position = gameState.characterDatas[factionId].position;
+            transform.eulerAngles = new Vector3(0,gameState.characterDatas[factionId].turn,0);
         }
     }
 }

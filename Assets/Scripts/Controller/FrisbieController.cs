@@ -12,6 +12,11 @@ namespace WJ
         private Vector2 terrainCalculeFrisbie;
         private GameState gameState = null;
 
+        public float Rayon
+        {
+            get{return rayon;}
+        }
+
         public void InitFrisbie(Vector2 terrainSize,GameState data)
         {
             terrainCalculeFrisbie = terrainSize/2.0f;
@@ -23,14 +28,14 @@ namespace WJ
         {
             data.move = false;
             data.currentDirection = Vector3.zero;
-            data.position = new Vector3(transform.position.x,baseHeight,transform.position.z);
+            data.position = new Vector3(data.position.x,baseHeight,data.position.z);
         }
         public void Update()
         {
             transform.position = gameState.FrisbiData.position;
         }
 
-        public void TranslatePosition(float dt,GameState data)
+        public void TranslatePosition(GameState data,float dt)
         {
             if(data.FrisbiData.throwMode == ThrowMode.Throw)
             {
@@ -55,13 +60,13 @@ namespace WJ
             {
                 data.currentDirection.x = -data.currentDirection.x;
                 data.position = new Vector3((terrainCalculeFrisbie.x/2.0f)-rayon,data.position.y,data.position.z);
-                GameManager.Instance.AddScorePoint(gameState,Faction.Left, (((terrainCalculeFrisbie.y)*(1/2.5f))-rayon < data.position.z || (-((terrainCalculeFrisbie.y)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
+                GameManager.Instance.AddScorePoint(gameState,Faction.Right, (((terrainCalculeFrisbie.y)*(1/2.5f))-rayon < data.position.z || (-((terrainCalculeFrisbie.y)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
             }
             if(-(terrainCalculeFrisbie.x)+rayon > data.position.x)
             {
                 data.currentDirection.x = -data.currentDirection.x;
                 data.position = new Vector3(-(terrainCalculeFrisbie.x)+rayon,data.position.y,data.position.z);
-                GameManager.Instance.AddScorePoint(gameState,Faction.Right, (((terrainCalculeFrisbie.y)*(1/2.5f))-rayon < data.position.z || (-((terrainCalculeFrisbie.y)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
+                GameManager.Instance.AddScorePoint(gameState,Faction.Left, (((terrainCalculeFrisbie.y)*(1/2.5f))-rayon < data.position.z || (-((terrainCalculeFrisbie.y)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
             }
         }
 
