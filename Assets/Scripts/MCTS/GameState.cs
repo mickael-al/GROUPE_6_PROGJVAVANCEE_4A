@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WJ;
+using System;
 
 namespace WJ_MCTS
 {
+    [Serializable]
     public class GameState 
     {
-        private GameManagerData gameManagerData = new GameManagerData();
-        private FrisbiData frisbiData = new FrisbiData();
-        private CharacterData[] characterData = new CharacterData[2];
+        [SerializeField] private GameManagerData gameManagerData = new GameManagerData();
+        [SerializeField] private FrisbiData frisbiData = new FrisbiData();
+        [SerializeField] private CharacterData[] characterData = new CharacterData[2];
 
         #region Getter
         public  CharacterData[] characterDatas { get {return characterData;} }

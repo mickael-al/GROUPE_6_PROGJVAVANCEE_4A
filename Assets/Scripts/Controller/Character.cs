@@ -19,6 +19,12 @@ namespace WJ
         protected float rayon = 1.0f;
         protected Vector2 terrainCalcule = Vector2.zero;
         protected Vector3 workPosition;
+        protected int numberAction = 12;
+
+        public int NumberAction
+        {
+            get{return numberAction;}
+        }
 
         public CharacterMode CharacterMode
         {
@@ -59,12 +65,12 @@ namespace WJ
             }
         }
 
-        public void Action1(GameState state,Vector3 dir)
+        public void Action1(GameState state,Vector3 dir,int fid)
         {
-            if(state.characterDatas[factionId].handObject)
+            if(state.characterDatas[fid].handObject)
             {
                 GameManager.Instance.Frisbie.Throw(state.FrisbiData,dir,Strength);
-                state.characterDatas[factionId].handObject = false;
+                state.characterDatas[fid].handObject = false;
             }
         }
 
@@ -114,6 +120,30 @@ namespace WJ
             gs.characterDatas[factionId].position += new Vector3(-gs.characterDatas[factionId].currentDirection.y,0,gs.characterDatas[factionId].currentDirection.x)*dt*Speed;
             BoardCollision(gs);
         }
+
+        public void Actions(int id,GameState gs,int fid)
+        {
+            int count = 0;
+            for(int i = -1 ; i <= 1;i++)
+            {
+                for(int j = -1 ; j <= 1;j++,count++)
+                {
+                    if(count == id)
+                    {
+                        gs.characterDatas[fid].currentDirection = new Vector3(i,j); 
+                        return;
+                    }
+                }   
+            }
+            for(int i = -1 ; i <= 1;i++,count++)
+            {
+                if(id==count)
+                {
+                    Action1(gs,fid == 0 ? Vector3.right + new Vector3(0,0,i): Vector3.left+ new Vector3(0,0,-i),fid);
+                    return;
+                }
+            }
+        } 
 
         public virtual void Update()
         {

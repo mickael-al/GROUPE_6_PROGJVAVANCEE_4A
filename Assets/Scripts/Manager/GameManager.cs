@@ -18,7 +18,10 @@ namespace WJ
         [SerializeField] private Vector2 terrainSize = new Vector2(20.0f,10.0f);
         [SerializeField] private Vector3[] characterPosition = {new Vector3(0,0,0),new Vector3(0,0,0)};
         [SerializeField] private int maxScoreToSet = 24;
-        [SerializeField] private float deltaBehaviour = 0.2f;
+        [SerializeField] private float deltaBehaviour = 0.1f;
+        [SerializeField] private int percentExplorationExploitation = 80;
+        [SerializeField] private int numbersTest = 20;
+        [SerializeField] private int numberSimulation = 20;
         private GameState gameState = new GameState();
         private FrisbieController frisbie = null;       
         private Character characterLeft = null; 
@@ -29,6 +32,10 @@ namespace WJ
         public Character CharacterLeft { get {return characterLeft;} }
         public Character CharacterRight { get {return characterRight;} }
         public float DeltaBehaviour { get {return deltaBehaviour;} }
+        public int PercentExplorationExploitation { get {return percentExplorationExploitation;} }
+        public int NumbersTest { get {return numbersTest;} }
+        public int NumberSimulation { get {return numberSimulation;} }
+        
         #endregion 
 
         [Header("Interface")]
@@ -206,7 +213,7 @@ namespace WJ
         public void StartThrow(GameState gs,Faction f)
         {
             Vector3 dir;
-            dir = (gs.characterDatas[(int)f].position-gs.FrisbiData.position).normalized;
+            dir = (gs.characterDatas[(int)f].position.ToVector3()-gs.FrisbiData.position.ToVector3()).normalized;
             dir.y = 0;
             frisbie.Throw(gs.FrisbiData,dir,10.0f);
         }
@@ -288,7 +295,7 @@ namespace WJ
             GamePauseManager.Instance.SetPause(pauseGame ? GamePause.Pause : GamePause.GamePlay);
         }
 
-        public void Simulate(ref GameState gs,float dt)
+        public void Simulate(GameState gs,float dt)
         {
             if(gs.GameManagerData.endGame && gs.GameManagerData.timeNextSet < 0.0f) {return;}
             gs.GameManagerData.gameTime -= dt;
@@ -331,7 +338,7 @@ namespace WJ
 
         void Update()
         {
-            Simulate(ref gameState,Time.deltaTime);
+            Simulate(gameState,Time.deltaTime);
             if(!gameState.GameManagerData.endSet && lastgameTime != (int)gameState.GameManagerData.gameTime)
             {
                 lastgameTime = (int)gameState.GameManagerData.gameTime;
