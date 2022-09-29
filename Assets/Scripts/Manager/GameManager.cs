@@ -18,9 +18,11 @@ namespace WJ
         [SerializeField] private Vector2 terrainSize = new Vector2(20.0f,10.0f);
         [SerializeField] private Vector3[] characterPosition = {new Vector3(0,0,0),new Vector3(0,0,0)};
         [SerializeField] private int maxScoreToSet = 24;
+        [Header("MCTS")]
         [SerializeField] private float deltaBehaviour = 0.1f;
         [SerializeField] private int percentExplorationExploitation = 80;
-        [SerializeField] private int numbersTest = 20;
+        [SerializeField] private int numbersNode = 20;
+        [SerializeField] private int numbersMaxIteration = 1000;
         [SerializeField] private int numberSimulation = 20;
         private GameState gameState = new GameState();
         private FrisbieController frisbie = null;       
@@ -33,7 +35,8 @@ namespace WJ
         public Character CharacterRight { get {return characterRight;} }
         public float DeltaBehaviour { get {return deltaBehaviour;} }
         public int PercentExplorationExploitation { get {return percentExplorationExploitation;} }
-        public int NumbersTest { get {return numbersTest;} }
+        public int NumbersNode { get {return numbersNode;} }
+        public int NumbersMaxIteration { get {return numbersMaxIteration;} }
         public int NumberSimulation { get {return numberSimulation;} }
         
         #endregion 
@@ -213,7 +216,7 @@ namespace WJ
         public void StartThrow(GameState gs,Faction f)
         {
             Vector3 dir;
-            dir = (gs.characterDatas[(int)f].position.ToVector3()-gs.FrisbiData.position.ToVector3()).normalized;
+            dir = (gs.characterDatas[(int)f].position-gs.FrisbiData.position).normalized;
             dir.y = 0;
             frisbie.Throw(gs.FrisbiData,dir,10.0f);
         }

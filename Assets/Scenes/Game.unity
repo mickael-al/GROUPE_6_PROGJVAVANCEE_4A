@@ -1690,10 +1690,11 @@ MonoBehaviour:
   - {x: -6, y: 3, z: 0}
   - {x: 6, y: 3, z: 0}
   maxScoreToSet: 24
-  deltaBehaviour: 0.1
+  deltaBehaviour: 0.016666
   percentExplorationExploitation: 80
-  numbersTest: 2
-  numberSimulation: 2
+  numbersNode: 100
+  numbersMaxIteration: 1000
+  numberSimulation: 50
   timeText: {fileID: 1179511997}
   scoreLeftText: {fileID: 1409610246}
   scoreRightText: {fileID: 2145917034}

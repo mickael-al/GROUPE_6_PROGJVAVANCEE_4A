@@ -9,14 +9,13 @@ namespace WJ_MCTS
         public MCTSNode<T> parent = null;
         public T data;
         public List<MCTSNode<T>> list = new List<MCTSNode<T>>();
-        public int visits = 0;
         public int[] action = new int[2];
         public float wi;
         public float ni;
 
         public MCTSNode(T d)
         {
-            this.data = d.FullCopy<T>();
+            this.data = d;
         }
 
         public T Data

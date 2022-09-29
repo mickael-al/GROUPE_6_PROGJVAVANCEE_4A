@@ -124,17 +124,21 @@ namespace WJ
         public void Actions(int id,GameState gs,int fid)
         {
             int count = 0;
-            for(int i = -1 ; i <= 1;i++)
+            if(id < 9)
             {
-                for(int j = -1 ; j <= 1;j++,count++)
+                for(int i = -1 ; i <= 1;i++)
                 {
-                    if(count == id)
+                    for(int j = -1 ; j <= 1;j++,count++)
                     {
-                        gs.characterDatas[fid].currentDirection = new Vector3(i,j); 
-                        return;
-                    }
-                }   
+                        if(count == id)
+                        {
+                            gs.characterDatas[fid].currentDirection = new Vector3(i,j); 
+                            return;
+                        }
+                    }   
+                }
             }
+            count = 8;
             for(int i = -1 ; i <= 1;i++,count++)
             {
                 if(id==count)
