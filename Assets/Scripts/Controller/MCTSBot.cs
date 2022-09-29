@@ -12,6 +12,7 @@ namespace WJ_Controller
     {
         public override void UpdateBehaviour()
         {
+            return;//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
             Actions(ComputeMCTS(gameState,GameManager.Instance.NumbersTest),gameState,factionId);
         }
 
@@ -19,20 +20,16 @@ namespace WJ_Controller
         {
             MCTSNode<GameState>[] arrayNode = new MCTSNode<GameState>[numbersTest+1];
             arrayNode[0] = new MCTSNode<GameState>(gs);
-            int size = 1;
+            arrayNode[0].data.GameManagerData.isCurrentGame = false;
+            int size = 0;
             MCTSNode<GameState> selectedNode = null;
             MCTSNode<GameState> newNode = null;
-            for(int i=0; i < numbersTest; ++i)
+            for(int i=0; i < numbersTest; i++)
             {
                 selectedNode = Selection(arrayNode,size);
-                //Assert.IsNotNull(selectedNode);
-                Debug.Log("1");
                 newNode = Expand(arrayNode,selectedNode,ref size);
-                Debug.Log("2");
                 Simulation(newNode);
-                Debug.Log("3");
                 BackPropagation(newNode,newNode.wi,newNode.ni);
-                Debug.Log("4");
             }
             return GetFirstAction(newNode);
         }
@@ -82,7 +79,7 @@ namespace WJ_Controller
             if(GameManager.Instance.PercentExplorationExploitation >= Random.Range(0,100))
             {
                 //Exploration
-                return arrayNode[Random.Range(0,size)];
+                return arrayNode[Random.Range(0,size+1)];
             }
             else
             {
@@ -90,7 +87,7 @@ namespace WJ_Controller
                 int selectedNode = -1;
                 float maxScore = float.MinValue;
                 float calc;
-                for (int i = 0; i < size; i++)
+                for (int i = 0; i < size+1; i++)
                 {
                     if(arrayNode[i].list.Count < numberAction)
                     {
