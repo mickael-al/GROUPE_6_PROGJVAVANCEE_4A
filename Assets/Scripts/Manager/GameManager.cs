@@ -59,6 +59,7 @@ namespace WJ
         private static int indiceMap = 0; 
         private static int indicePlayerLeft = 0;
         private static int indicePlayerRight = 0;
+        
         private static CharacterMode characterModeRight = CharacterMode.RandomBot; 
         
         public static int IndicePlayerLeft

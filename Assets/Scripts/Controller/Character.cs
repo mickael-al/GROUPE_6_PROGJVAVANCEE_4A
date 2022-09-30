@@ -20,6 +20,7 @@ namespace WJ
         private float frisbieRayon = 1.0f;
         protected Vector2 terrainCalcule = Vector2.zero;
         protected Vector3 workPosition;
+
         protected Vector2[] possibleMove = {
             Vector2.zero,
             Vector2.left,
