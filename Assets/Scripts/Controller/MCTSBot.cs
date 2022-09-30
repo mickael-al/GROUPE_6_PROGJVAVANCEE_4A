@@ -5,6 +5,7 @@ using WJ;
 using WJ_MCTS;
 using System.Linq;
 using UnityEngine.Assertions;
+using System.Threading;
 
 namespace WJ_Controller
 {
@@ -19,6 +20,7 @@ namespace WJ_Controller
         private float calc;
         private MCTSNode<GameState> selectedNode = null;
         private List<int> action = new List<int>();
+        private Thread thread;
         public void Start()
         {
            arrayNode = new MCTSNode<GameState>[GameManager.Instance.NumbersNode+1];
@@ -26,8 +28,10 @@ namespace WJ_Controller
            {
                 arrayNode[i] = new MCTSNode<GameState>();
            }
-           arrayNodeUnfinished = new MCTSNode<GameState>[GameManager.Instance.NumbersNode+1]; 
+           arrayNodeUnfinished = new MCTSNode<GameState>[GameManager.Instance.NumbersNode+1];
         } 
+
+
         public override void UpdateBehaviour()
         {
             timeExecuteState = GameManager.Instance.DeltaBehaviour;
@@ -74,7 +78,7 @@ namespace WJ_Controller
             for(int i=0; i < numbersTest; i++)
             {
                 selectedNode = Selection();
-                Assert.IsTrue(selectedNode != null);
+                //Assert.IsTrue(selectedNode != null);
                 newNode = Expand(selectedNode);
                 Simulation(newNode);                
                 BackPropagation(newNode);
