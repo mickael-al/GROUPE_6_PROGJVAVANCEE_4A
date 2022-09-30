@@ -1691,6 +1691,9 @@ MonoBehaviour:
   - {x: 6, y: 3, z: 0}
   maxScoreToSet: 24
   deltaBehaviour: 0.2
+  percentExplorationExploitation: 80
+  numbersTest: 5
+  numberSimulation: 20
   timeText: {fileID: 1179511997}
   scoreLeftText: {fileID: 1409610246}
   scoreRightText: {fileID: 2145917034}
@@ -1983,6 +1986,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4980604728018131142, guid: 1452c08cf91e43d42b1eb1866d5120b1,
+        type: 3}
+      propertyPath: mapSound
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4980604728018131143, guid: 1452c08cf91e43d42b1eb1866d5120b1,
         type: 3}
       propertyPath: m_RootOrder
@@ -2038,6 +2046,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6124974183925353490, guid: 1452c08cf91e43d42b1eb1866d5120b1,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 872628113f4e2694a8ffc389dbb6cfae, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1452c08cf91e43d42b1eb1866d5120b1, type: 3}
 --- !u!1 &1649670469

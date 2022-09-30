@@ -17,24 +17,22 @@ namespace WJ_Controller
 
         public int ComputeMCTS(GameState gs,int numbersTest)
         {
+            
             MCTSNode<GameState>[] arrayNode = new MCTSNode<GameState>[numbersTest+1];
             arrayNode[0] = new MCTSNode<GameState>(gs);
+            arrayNode[0].data.GameManagerData.isCurrentGame = false;
             int size = 1;
             MCTSNode<GameState> selectedNode = null;
             MCTSNode<GameState> newNode = null;
             for(int i=0; i < numbersTest; ++i)
             {
                 selectedNode = Selection(arrayNode,size);
-                //Assert.IsNotNull(selectedNode);
-                Debug.Log("1");
-                newNode = Expand(arrayNode,selectedNode,ref size);
-                Debug.Log("2");
+                newNode = Expand(arrayNode,selectedNode,ref size);           
                 Simulation(newNode);
-                Debug.Log("3");
                 BackPropagation(newNode,newNode.wi,newNode.ni);
-                Debug.Log("4");
             }
             return GetFirstAction(newNode);
+            // Plant here Assert.IsTrue(false);
         }
 
         public int GetFirstAction(MCTSNode<GameState> node)

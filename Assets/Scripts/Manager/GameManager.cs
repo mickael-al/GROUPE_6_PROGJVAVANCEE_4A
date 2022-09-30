@@ -20,7 +20,7 @@ namespace WJ
         [SerializeField] private int maxScoreToSet = 24;
         [SerializeField] private float deltaBehaviour = 0.1f;
         [SerializeField] private int percentExplorationExploitation = 80;
-        [SerializeField] private int numbersTest = 20;
+        [SerializeField] private int numbersTest = 5;
         [SerializeField] private int numberSimulation = 20;
         private GameState gameState = new GameState();
         private FrisbieController frisbie = null;       
