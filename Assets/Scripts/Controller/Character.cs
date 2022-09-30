@@ -20,11 +20,27 @@ namespace WJ
         private float frisbieRayon = 1.0f;
         protected Vector2 terrainCalcule = Vector2.zero;
         protected Vector3 workPosition;
-        protected int numberAction = 12;
+
+        protected Vector2[] possibleMove = {
+            Vector2.zero,
+            Vector2.left,
+            Vector2.right,
+            Vector2.up,
+            Vector2.down
+        };
+
+        protected Vector3[,] possibleThrow = {
+            {new Vector3(1,0,-1),
+            new Vector3(1,0,-1),
+            new Vector3(1,0,-1)},
+            {new Vector3(-1,0,-1),
+            new Vector3(-1,0,-1),
+            new Vector3(-1,0,-1)}
+        };
 
         public int NumberAction
         {
-            get{return numberAction;}
+            get{return possibleMove.Length+3;}
         }
 
         public CharacterMode CharacterMode
@@ -125,32 +141,13 @@ namespace WJ
 
         public void Actions(int id,GameState gs,int fid)
         {
-            int count = 0;
-            if(id < 9)
+            if(id < 5)
             {
-                for(int i = -1 ; i <= 1;i++)
-                {
-                    for(int j = -1 ; j <= 1;j++)
-                    {
-                        if(count == id)
-                        {
-                            gs.characterDatas[fid].currentDirection = new Vector3(i,j);                            
-                            return;
-                        }
-                        count++;
-                    }   
-                }
+                gs.characterDatas[fid].currentDirection.x = possibleMove[id].x;
+                gs.characterDatas[fid].currentDirection.y = possibleMove[id].y;
+                return;
             }
-            count = 9;
-            for(int i = -1 ; i <= 1;i++)
-            {
-                if(id==count)
-                {
-                    Action1(gs,fid == 0 ? Vector3.right + new Vector3(0,0,i): Vector3.left+ new Vector3(0,0,-i),fid);
-                    return;
-                }
-                count++;
-            }
+            Action1(gs,possibleThrow[fid,id-5],fid);
         } 
 
         public virtual void Update()

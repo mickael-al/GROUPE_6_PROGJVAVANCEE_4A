@@ -13,14 +13,14 @@ namespace WJ_MCTS
         public float wi;
         public float ni;
 
-        public MCTSNode(T d)
+        public void Clear()
         {
-            this.data = d;
-        }
-
-        public T Data
-        {
-            get {return data;}
+            ni = 0;
+            wi = 0;
+            action[0] = 0;
+            action[1] = 0;
+            data = default(T);
+            list.Clear();
         }
 
         public MCTSNode<T> Add(MCTSNode<T> t)

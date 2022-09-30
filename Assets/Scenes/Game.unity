@@ -1691,10 +1691,10 @@ MonoBehaviour:
   - {x: 6, y: 3, z: 0}
   maxScoreToSet: 24
   deltaBehaviour: 0.03333
-  percentExplorationExploitation: 80
-  numbersNode: 350
+  percentExplorationExploitation: 50
+  numbersNode: 800
   numbersMaxIteration: 1000
-  numberSimulation: 10
+  numberSimulation: 20
   timeText: {fileID: 1179511997}
   scoreLeftText: {fileID: 1409610246}
   scoreRightText: {fileID: 2145917034}

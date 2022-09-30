@@ -5,6 +5,7 @@ using WJ;
 using WJ_MCTS;
 using System.Linq;
 using UnityEngine.Assertions;
+using System.Threading;
 
 namespace WJ_Controller
 {
@@ -18,13 +19,22 @@ namespace WJ_Controller
         private int selectedNodeScore = -1;
         private float calc;
         private MCTSNode<GameState> selectedNode = null;
+        private List<int> action = new List<int>();
+        private Thread thread;
         public void Start()
         {
            arrayNode = new MCTSNode<GameState>[GameManager.Instance.NumbersNode+1];
-           arrayNodeUnfinished = new MCTSNode<GameState>[GameManager.Instance.NumbersNode+1]; 
+           for(int i = 0; i < GameManager.Instance.NumbersNode+1;i++)
+           {
+                arrayNode[i] = new MCTSNode<GameState>();
+           }
+           arrayNodeUnfinished = new MCTSNode<GameState>[GameManager.Instance.NumbersNode+1];
         } 
+
+
         public override void UpdateBehaviour()
         {
+            timeExecuteState = GameManager.Instance.DeltaBehaviour;
             if(gameState.GameManagerData.endSet)
             {
                 return;
@@ -48,9 +58,18 @@ namespace WJ_Controller
             return result+(node.list.Count > 0 ? ")" : "");
         }
 
+        public void ClearNode(int numbersTest)
+        {
+            for(int i = 0; i < numbersTest+1;i++)
+            {
+                arrayNode[i].Clear();
+            }
+        }
+
         public int ComputeMCTS(GameState gs,int numbersTest)
         {
-            arrayNode[0] = new MCTSNode<GameState>(gs.copy());
+            ClearNode(numbersTest);
+            arrayNode[0].data = gs.copy();
             arrayNodeUnfinished[0] = arrayNode[0];
             currentSize = 0;
             currentSizeUnFinished = 0;
@@ -59,8 +78,8 @@ namespace WJ_Controller
             for(int i=0; i < numbersTest; i++)
             {
                 selectedNode = Selection();
-                Assert.IsTrue(selectedNode != null);
-                newNode = Expand(arrayNode,selectedNode);
+                //Assert.IsTrue(selectedNode != null);
+                newNode = Expand(selectedNode);
                 Simulation(newNode);                
                 BackPropagation(newNode);
             }
@@ -87,11 +106,11 @@ namespace WJ_Controller
 
         public List<int> GetPosibleAction(int fid,MCTSNode<GameState> node)
         {
-            List<int> action = new List<int>();
+            action.Clear();
             bool isNotUsed = false; 
             if(node.data.characterDatas[fid].handObject)
             {
-                for (int i = 9; i < numberAction; i++)
+                for (int i = possibleMove.Length; i < NumberAction; i++)
                 {
                     isNotUsed = true;
                     for(int j = 0; j < node.list.Count && isNotUsed;j++)
@@ -106,7 +125,7 @@ namespace WJ_Controller
             }
             else
             {
-                for (int i = 0; i < 9; i++)
+                for (int i = 0; i < possibleMove.Length; i++)
                 {
                     isNotUsed = true;
                     for(int j = 0; j < node.list.Count && isNotUsed;j++)
@@ -135,7 +154,7 @@ namespace WJ_Controller
                 maxScore = float.MinValue;
                 for (int i = 0; i < currentSizeUnFinished+1; i++)
                 {
-                    if(arrayNodeUnfinished[i].list.Count < numberAction)
+                    if(arrayNodeUnfinished[i].list.Count < NumberAction)
                     {
                         calc = calculeScoreNode(arrayNodeUnfinished[i]);
                         if(calc > maxScore)
@@ -158,20 +177,20 @@ namespace WJ_Controller
             return node.wi/node.ni;//	wi/ni + c*sqrt(t)/ni
         }
 
-        public MCTSNode<GameState>  Expand(MCTSNode<GameState>[] arrayNode,MCTSNode<GameState> node)
-        {        
-            MCTSNode<GameState> newNode = node.Add(new MCTSNode<GameState>(node.data.copy()));            
-            arrayNode[++currentSize] = newNode;
-            List<int> valueLeft = GetPosibleAction(0,newNode);
-            List<int> valueRight = GetPosibleAction(1,newNode);
-            newNode.action[0] = valueLeft[Random.Range(0,valueLeft.Count)];
-            newNode.action[1] = valueRight[Random.Range(0,valueRight.Count)];
-            GameManager.Instance.Simulate(newNode.data,GameManager.Instance.DeltaBehaviour);
-            if(!newNode.data.GameManagerData.endSet)
+        public MCTSNode<GameState> Expand(MCTSNode<GameState> node)
+        {         
+            arrayNode[++currentSize].data = node.data.copy();
+            node.Add(arrayNode[currentSize]);
+            GetPosibleAction(0,arrayNode[currentSize]);
+            arrayNode[currentSize].action[0] = action[Random.Range(0,action.Count)];
+            GetPosibleAction(1,arrayNode[currentSize]);
+            arrayNode[currentSize].action[1] = action[Random.Range(0,action.Count)];
+            GameManager.Instance.Simulate(arrayNode[currentSize].data,GameManager.Instance.DeltaBehaviour);
+            if(!arrayNode[currentSize].data.GameManagerData.endSet)
             {
-                arrayNodeUnfinished[++currentSizeUnFinished] = newNode;
+                arrayNodeUnfinished[++currentSizeUnFinished] = arrayNode[currentSize];
             }
-            return newNode;
+            return arrayNode[currentSize];
         }
 
         public void Simulation(MCTSNode<GameState> node)
@@ -184,10 +203,10 @@ namespace WJ_Controller
             {
                 maxIteration = GameManager.Instance.NumbersMaxIteration;
                 gs = node.data.copy();
-                while(node.data.GameManagerData.scoreLeft==gs.GameManagerData.scoreLeft && node.data.GameManagerData.scoreRight==gs.GameManagerData.scoreRight && !gs.GameManagerData.endSet  && maxIteration > 0)
+                while(gs.GameManagerData.scoreLeft == node.data.GameManagerData.scoreLeft && gs.GameManagerData.scoreRight == node.data.GameManagerData.scoreRight && !gs.GameManagerData.endSet && maxIteration > 0)
                 {
-                    Actions(gs.characterDatas[0].handObject ? Random.Range(9,numberAction) : Random.Range(0, 9),gs,0);
-                    Actions(gs.characterDatas[1].handObject ? Random.Range(9,numberAction) : Random.Range(0, 9),gs,1);
+                    Actions(gs.characterDatas[0].handObject ? Random.Range(possibleMove.Length,NumberAction) : Random.Range(0, possibleMove.Length),gs,0);
+                    Actions(gs.characterDatas[1].handObject ? Random.Range(possibleMove.Length,NumberAction) : Random.Range(0, possibleMove.Length),gs,1);
                     GameManager.Instance.Simulate(gs,GameManager.Instance.DeltaBehaviour);
                     maxIteration--;
                 }
@@ -210,7 +229,7 @@ namespace WJ_Controller
                 node.wi += winRightIteration;    
                 node.wi -= winLeftIteration;    
             }      
-            node.ni+=GameManager.Instance.NumberSimulation*5;    
+            node.ni+=GameManager.Instance.NumberSimulation;    
         }
 
         public void BackPropagation(MCTSNode<GameState> node)
