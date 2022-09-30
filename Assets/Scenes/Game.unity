@@ -1689,6 +1689,12 @@ MonoBehaviour:
   characterPosition:
   - {x: -6, y: 3, z: 0}
   - {x: 6, y: 3, z: 0}
+  maxScoreToSet: 24
+  deltaBehaviour: 0.03333
+  percentExplorationExploitation: 80
+  numbersNode: 350
+  numbersMaxIteration: 1000
+  numberSimulation: 10
   timeText: {fileID: 1179511997}
   scoreLeftText: {fileID: 1409610246}
   scoreRightText: {fileID: 2145917034}
@@ -1981,6 +1987,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4980604728018131142, guid: 1452c08cf91e43d42b1eb1866d5120b1,
+        type: 3}
+      propertyPath: mapSound
+      value: 
+      objectReference: {fileID: 8300000, guid: d389d101df90060418158146940cf90d, type: 3}
     - target: {fileID: 4980604728018131143, guid: 1452c08cf91e43d42b1eb1866d5120b1,
         type: 3}
       propertyPath: m_RootOrder
