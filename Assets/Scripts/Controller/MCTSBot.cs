@@ -12,12 +12,23 @@ namespace WJ_Controller
     {
         private MCTSNode<GameState>[] arrayNode;
         private int currentSize = 0;
+        private MCTSNode<GameState>[] arrayNodeUnfinished;
+        private int currentSizeUnFinished = 0;
+        private float maxScore;
+        private int selectedNodeScore = -1;
+        private float calc;
+        private MCTSNode<GameState> selectedNode = null;
         public void Start()
         {
            arrayNode = new MCTSNode<GameState>[GameManager.Instance.NumbersNode+1];
+           arrayNodeUnfinished = new MCTSNode<GameState>[GameManager.Instance.NumbersNode+1]; 
         } 
         public override void UpdateBehaviour()
         {
+            if(gameState.GameManagerData.endSet)
+            {
+                return;
+            }
             Actions(ComputeMCTS(gameState,GameManager.Instance.NumbersNode),gameState,factionId);
             /*if(currentSize > 0)
             {
@@ -29,7 +40,7 @@ namespace WJ_Controller
 
         public string RecurseDebug(MCTSNode<GameState> node,int depth = 0)
         {
-            string result = string.Concat("",node.wi,"/",node.ni,node.list.Count > 0 ? "(" : ",");
+            string result = string.Concat("",calculeScoreNode(node).ToString("F2"),node.list.Count > 0 ? "(" : ",");
             foreach(MCTSNode<GameState> n in node.list)
             {
                 result += RecurseDebug(n,depth+1);
@@ -39,44 +50,39 @@ namespace WJ_Controller
 
         public int ComputeMCTS(GameState gs,int numbersTest)
         {
-<<<<<<< HEAD
-            
-            MCTSNode<GameState>[] arrayNode = new MCTSNode<GameState>[numbersTest+1];
-            arrayNode[0] = new MCTSNode<GameState>(gs);
-            arrayNode[0].data.GameManagerData.isCurrentGame = false;
-            int size = 1;
-=======
             arrayNode[0] = new MCTSNode<GameState>(gs.copy());
+            arrayNodeUnfinished[0] = arrayNode[0];
             currentSize = 0;
->>>>>>> 4cc8795f07bbfda3db8370953316c0a84bba4ebd
-            MCTSNode<GameState> selectedNode = null;
+            currentSizeUnFinished = 0;
+            selectedNode = null;
             MCTSNode<GameState> newNode = null;
             for(int i=0; i < numbersTest; i++)
             {
-<<<<<<< HEAD
-                selectedNode = Selection(arrayNode,size);
-                newNode = Expand(arrayNode,selectedNode,ref size);           
-                Simulation(newNode);
-                BackPropagation(newNode,newNode.wi,newNode.ni);
-=======
-                selectedNode = Selection(arrayNode);
+                selectedNode = Selection();
+                Assert.IsTrue(selectedNode != null);
                 newNode = Expand(arrayNode,selectedNode);
                 Simulation(newNode);                
                 BackPropagation(newNode);
->>>>>>> 4cc8795f07bbfda3db8370953316c0a84bba4ebd
             }
-            return GetFirstAction(newNode);
-            // Plant here Assert.IsTrue(false);
+            return GetFirstBestAction();
         }
 
-        public int GetFirstAction(MCTSNode<GameState> node)
+        public int GetFirstBestAction()
         {
-            MCTSNode<GameState> currentNode = node;
-            while(currentNode.parent.parent != null)
+            maxScore = float.MinValue;
+            selectedNodeScore = -1;
+            for(int i = 0; i < arrayNode[0].list.Count;i++)
             {
-                currentNode = currentNode.parent;
+                calc = calculeScoreNode(arrayNode[0].list[i]);
+                if(calc > maxScore)
+                {
+                    maxScore = calc;
+                    selectedNodeScore = i;
+                }
             }
-            return currentNode.action[factionId];
+            //Debug.Log(arrayNode[0].list[selectedNodeScore].action[factionId]);
+            //Assert.IsTrue(arrayNode[0].list[selectedNodeScore].action[factionId] != -1);
+            return arrayNode[0].list[selectedNodeScore].action[factionId];
         }
 
         public List<int> GetPosibleAction(int fid,MCTSNode<GameState> node)
@@ -85,7 +91,7 @@ namespace WJ_Controller
             bool isNotUsed = false; 
             if(node.data.characterDatas[fid].handObject)
             {
-                for (int i = 0; i < numberAction; i++)
+                for (int i = 9; i < numberAction; i++)
                 {
                     isNotUsed = true;
                     for(int j = 0; j < node.list.Count && isNotUsed;j++)
@@ -116,32 +122,30 @@ namespace WJ_Controller
             return action;
         }
 
-        public MCTSNode<GameState> Selection(MCTSNode<GameState>[] arrayNode)
+        public MCTSNode<GameState> Selection()
         {
             if(GameManager.Instance.PercentExplorationExploitation >= Random.Range(0,100))
             {
-                //Exploration
-                return arrayNode[Random.Range(0,currentSize+1)];
+                return arrayNodeUnfinished[Random.Range(0,currentSizeUnFinished+1)];
             }
             else
             {
                 //Exploitation
-                int selectedNode = -1;
-                float maxScore = float.MinValue;
-                float calc;
-                for (int i = 0; i < currentSize+1; i++)
+                selectedNodeScore = -1;
+                maxScore = float.MinValue;
+                for (int i = 0; i < currentSizeUnFinished+1; i++)
                 {
-                    if(arrayNode[i].list.Count < numberAction)
+                    if(arrayNodeUnfinished[i].list.Count < numberAction)
                     {
-                        calc = calculeScoreNode(arrayNode[i]);
+                        calc = calculeScoreNode(arrayNodeUnfinished[i]);
                         if(calc > maxScore)
                         {
-                            selectedNode = i;
+                            selectedNodeScore = i;
                             maxScore = calc;
                         }
                     }
                 }
-                return selectedNode == -1 ? null : arrayNode[selectedNode];
+                return selectedNodeScore == -1 ? null : arrayNodeUnfinished[selectedNodeScore];
             }
         }
 
@@ -154,7 +158,7 @@ namespace WJ_Controller
             return node.wi/node.ni;//	wi/ni + c*sqrt(t)/ni
         }
 
-        public MCTSNode<GameState> Expand(MCTSNode<GameState>[] arrayNode,MCTSNode<GameState> node)
+        public MCTSNode<GameState>  Expand(MCTSNode<GameState>[] arrayNode,MCTSNode<GameState> node)
         {        
             MCTSNode<GameState> newNode = node.Add(new MCTSNode<GameState>(node.data.copy()));            
             arrayNode[++currentSize] = newNode;
@@ -163,6 +167,10 @@ namespace WJ_Controller
             newNode.action[0] = valueLeft[Random.Range(0,valueLeft.Count)];
             newNode.action[1] = valueRight[Random.Range(0,valueRight.Count)];
             GameManager.Instance.Simulate(newNode.data,GameManager.Instance.DeltaBehaviour);
+            if(!newNode.data.GameManagerData.endSet)
+            {
+                arrayNodeUnfinished[++currentSizeUnFinished] = newNode;
+            }
             return newNode;
         }
 
@@ -187,7 +195,7 @@ namespace WJ_Controller
                 {
                     winLeftIteration++;
                 }
-                else
+                else if(gs.GameManagerData.scoreRight != node.data.GameManagerData.scoreRight)
                 {
                     winRightIteration++;
                 }

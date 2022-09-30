@@ -17,6 +17,7 @@ namespace WJ
         protected GameState gameState = null;
         private Vector3 spawnPosition = Vector3.zero;
         protected float rayon = 1.0f;
+        private float frisbieRayon = 1.0f;
         protected Vector2 terrainCalcule = Vector2.zero;
         protected Vector3 workPosition;
         protected int numberAction = 12;
@@ -45,6 +46,7 @@ namespace WJ
             this.gameState = gs;
             this.spawnPosition = spawnPos;
             gs.characterDatas[factionId].position = this.spawnPosition;
+            frisbieRayon = GameManager.Instance.Frisbie.Rayon;
         }
 
         public void ResetSpawnPosition(GameState gs)
@@ -55,12 +57,11 @@ namespace WJ
         }
 
         public void TakeFrisbie(GameState gs)
-        {
-            float r = GameManager.Instance.Frisbie.Rayon; 
-            if(gs.FrisbiData.move && !gs.characterDatas[factionId].handObject && Vector3.Distance(gs.characterDatas[factionId].position,gs.FrisbiData.position) < rayon+r)
+        { 
+            if(gs.FrisbiData.move && !gs.characterDatas[factionId].handObject && Vector3.Distance(gs.characterDatas[factionId].position,gs.FrisbiData.position) < rayon+frisbieRayon)
             {
                 gs.characterDatas[factionId].handObject = true;
-                gs.FrisbiData.position = gs.characterDatas[factionId].position + (Faction.Left == faction ? Vector3.right*(rayon+r):Vector3.left*(rayon+r));
+                gs.FrisbiData.position = gs.characterDatas[factionId].position + (factionId== 0 ? Vector3.right*(rayon+frisbieRayon):Vector3.left*(rayon+frisbieRayon));
                 GameManager.Instance.Frisbie.Stop(gs.FrisbiData);
             }
         }
@@ -77,35 +78,35 @@ namespace WJ
         public void BoardCollision(GameState gs)
         {
             workPosition = gs.characterDatas[factionId].position;
-            if(Faction.Left == faction)
+            if(factionId == 0)
             {
                 if(workPosition.x < -terrainCalcule.x)
                 {
-                    workPosition = new Vector3(-terrainCalcule.x,workPosition.y,workPosition.z);
+                    workPosition.x = -terrainCalcule.x;
                 }
                 if(workPosition.x > 0)
                 {
-                    workPosition = new Vector3(0.0f,workPosition.y,workPosition.z);
+                    workPosition.x = 0.0f;                    
                 }
             }
             else
             {
                 if(workPosition.x > terrainCalcule.x)
                 {
-                    workPosition = new Vector3(terrainCalcule.x,workPosition.y,workPosition.z);
+                    workPosition.x = terrainCalcule.x;
                 }
                 if(workPosition.x < 0)
                 {
-                    workPosition = new Vector3(0.0f,workPosition.y,workPosition.z);
+                    workPosition.x = 0.0f;
                 }
             }
             if(workPosition.z > terrainCalcule.y)
             {
-                workPosition = new Vector3(workPosition.x,workPosition.y,terrainCalcule.y);
+                workPosition.z = terrainCalcule.y;
             }
             if(workPosition.z < -terrainCalcule.y)
             {
-                workPosition = new Vector3(workPosition.x,workPosition.y,-terrainCalcule.y);
+                workPosition.z = -terrainCalcule.y;
             }
             gs.characterDatas[factionId].position = workPosition;
         }
@@ -117,7 +118,8 @@ namespace WJ
             {
                 return;
             }
-            gs.characterDatas[factionId].position += new Vector3(-gs.characterDatas[factionId].currentDirection.y,0,gs.characterDatas[factionId].currentDirection.x)*dt*Speed;
+            gs.characterDatas[factionId].position.x += -gs.characterDatas[factionId].currentDirection.y * dt * Speed;
+            gs.characterDatas[factionId].position.z += gs.characterDatas[factionId].currentDirection.x * dt * Speed;
             BoardCollision(gs);
         }
 
@@ -128,24 +130,26 @@ namespace WJ
             {
                 for(int i = -1 ; i <= 1;i++)
                 {
-                    for(int j = -1 ; j <= 1;j++,count++)
+                    for(int j = -1 ; j <= 1;j++)
                     {
                         if(count == id)
                         {
-                            gs.characterDatas[fid].currentDirection = new Vector3(i,j); 
+                            gs.characterDatas[fid].currentDirection = new Vector3(i,j);                            
                             return;
                         }
+                        count++;
                     }   
                 }
             }
-            count = 8;
-            for(int i = -1 ; i <= 1;i++,count++)
+            count = 9;
+            for(int i = -1 ; i <= 1;i++)
             {
                 if(id==count)
                 {
                     Action1(gs,fid == 0 ? Vector3.right + new Vector3(0,0,i): Vector3.left+ new Vector3(0,0,-i),fid);
                     return;
                 }
+                count++;
             }
         } 
 

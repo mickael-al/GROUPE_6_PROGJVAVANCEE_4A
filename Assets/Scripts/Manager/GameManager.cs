@@ -28,6 +28,7 @@ namespace WJ
         private FrisbieController frisbie = null;       
         private Character characterLeft = null; 
         private Character characterRight = null;
+        private Faction f;
 
         #region Getter
         public FrisbieController Frisbie { get {return frisbie;} }
@@ -57,7 +58,7 @@ namespace WJ
         private static int indiceMap = 0; 
         private static int indicePlayerLeft = 0;
         private static int indicePlayerRight = 0;
-        private static CharacterMode characterModeRight = CharacterMode.RandomBot; 
+        private static CharacterMode characterModeRight = CharacterMode.MCTSBot; 
         
         public static int IndicePlayerLeft
         {
@@ -84,9 +85,9 @@ namespace WJ
         }
         #endregion
 
-        public void AddScorePoint(GameState gs, Faction f,int value = 1)
+        public void AddScorePoint(GameState gs, int f,int value = 1)
         {
-            if(Faction.Left == f)
+            if(f == 0)
             {
                 gs.GameManagerData.scoreRight+=value;
             }
@@ -155,7 +156,7 @@ namespace WJ
                 RessourceManager.Instance.CharacterInfos[indicePlayerRight],
                 Faction.Right,
                 characterPosition[1]);
-            StartThrow(gameState,Random.Range(0,2) == 0 ? Faction.Left : Faction.Right);
+            StartThrow(gameState,Random.Range(0,2));
             SeeCursor(false);
             CharacterCanMove(gameState,true);
         }
@@ -199,7 +200,7 @@ namespace WJ
             }
         }
 
-        public void ResetWin(GameState gs,Faction f)
+        public void ResetWin(GameState gs,int f)
         {
             frisbie.Reset(gs.FrisbiData);
             ResetPlayerPosition(gs);
@@ -213,10 +214,10 @@ namespace WJ
         }
 
 
-        public void StartThrow(GameState gs,Faction f)
+        public void StartThrow(GameState gs,int f)
         {
             Vector3 dir;
-            dir = (gs.characterDatas[(int)f].position-gs.FrisbiData.position).normalized;
+            dir = (gs.characterDatas[f].position-gs.FrisbiData.position).normalized;
             dir.y = 0;
             frisbie.Throw(gs.FrisbiData,dir,10.0f);
         }
@@ -261,6 +262,7 @@ namespace WJ
             {
                 gs.GameManagerData.timeNextSet = 4.0f;
                 gs.GameManagerData.endGame = true;
+                gs.GameManagerData.endSet = true;
                 if(gs.GameManagerData.isCurrentGame)
                 {
                     winObj.SetActive(true);
@@ -314,7 +316,6 @@ namespace WJ
             }
             if(gs.GameManagerData.endSet && gs.GameManagerData.timeNextSet <= 0.0f)
             {
-                Faction f;
                 if(isWinBO3(gs.GameManagerData,out f))
                 {
                     if(gs.GameManagerData.isCurrentGame)
@@ -330,7 +331,7 @@ namespace WJ
                     }
                     gs.GameManagerData.gameTime = RoundMaxTime;
                     gs.GameManagerData.endSet = false;
-                    StartThrow(gs,f == Faction.Left ? Faction.Right : Faction.Left);
+                    StartThrow(gs,f == Faction.Left ? 1 : 0);
                 }
                 CharacterCanMove(gs,true);
             }

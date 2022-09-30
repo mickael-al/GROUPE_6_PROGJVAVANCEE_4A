@@ -1690,18 +1690,11 @@ MonoBehaviour:
   - {x: -6, y: 3, z: 0}
   - {x: 6, y: 3, z: 0}
   maxScoreToSet: 24
-<<<<<<< HEAD
-  deltaBehaviour: 0.2
+  deltaBehaviour: 0.03333
   percentExplorationExploitation: 80
-  numbersTest: 5
-  numberSimulation: 20
-=======
-  deltaBehaviour: 0.016666
-  percentExplorationExploitation: 80
-  numbersNode: 100
+  numbersNode: 350
   numbersMaxIteration: 1000
-  numberSimulation: 50
->>>>>>> 4cc8795f07bbfda3db8370953316c0a84bba4ebd
+  numberSimulation: 10
   timeText: {fileID: 1179511997}
   scoreLeftText: {fileID: 1409610246}
   scoreRightText: {fileID: 2145917034}
@@ -1998,7 +1991,7 @@ PrefabInstance:
         type: 3}
       propertyPath: mapSound
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8300000, guid: d389d101df90060418158146940cf90d, type: 3}
     - target: {fileID: 4980604728018131143, guid: 1452c08cf91e43d42b1eb1866d5120b1,
         type: 3}
       propertyPath: m_RootOrder
@@ -2054,11 +2047,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6124974183925353490, guid: 1452c08cf91e43d42b1eb1866d5120b1,
-        type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 872628113f4e2694a8ffc389dbb6cfae, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1452c08cf91e43d42b1eb1866d5120b1, type: 3}
 --- !u!1 &1649670469
