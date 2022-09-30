@@ -15,7 +15,6 @@ namespace WJ_Controller
             timeExecuteState -= Time.deltaTime;
             if(timeExecuteState < 0.0f)
             {
-                timeExecuteState = GameManager.Instance.DeltaBehaviour;
                 UpdateBehaviour();
             }
         }

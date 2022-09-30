@@ -243,7 +243,7 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""down"",
+                    ""name"": ""up"",
                     ""id"": ""523fbb74-17fc-45c4-b01f-86e1b9845833"",
                     ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
@@ -254,7 +254,7 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""up"",
+                    ""name"": ""down"",
                     ""id"": ""fa04e1b9-780a-46a0-b255-378364a29ca3"",
                     ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
@@ -265,7 +265,7 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""right"",
+                    ""name"": ""left"",
                     ""id"": ""fbd2ce03-4238-4c51-9d94-9b37a5e5a0f5"",
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
@@ -276,7 +276,7 @@ public partial class @MCTS_Windjammers : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""left"",
+                    ""name"": ""right"",
                     ""id"": ""8d3a2f39-67d9-472b-9125-5aa91da19b03"",
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",

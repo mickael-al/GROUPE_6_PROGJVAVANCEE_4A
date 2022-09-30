@@ -9,6 +9,7 @@ namespace WJ_Controller
     {
         public override void UpdateBehaviour()
         {
+            timeExecuteState = GameManager.Instance.DeltaBehaviour*5.0f;
             base.gameState.characterDatas[factionId].currentDirection = new Vector3(Random.Range(-1.0f,1.0f),Random.Range(-1.0f,1.0f));
             if(Random.Range(0,2) == 0)
             {

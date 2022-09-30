@@ -12,7 +12,7 @@ namespace WJ_Controller
         private Vector2 moveDir;
         public void Action1(InputAction.CallbackContext ctx)
         {
-            base.Action1(gameState,(Faction.Left == faction ? Vector3.right + new Vector3(0,0,InputManager.InputJoueur.Player.Move.ReadValue<Vector2>().y):Vector3.left+ new Vector3(0,0,-InputManager.InputJoueur.Player.MoveP2.ReadValue<Vector2>().y)),factionId);
+            base.Action1(gameState,(Faction.Left == faction ? Vector3.right + new Vector3(0,0,InputManager.InputJoueur.Player.Move.ReadValue<Vector2>().y):Vector3.left+ new Vector3(0,0,InputManager.InputJoueur.Player.MoveP2.ReadValue<Vector2>().y)),factionId);
         }
 
         public void Action2(InputAction.CallbackContext ctx)
