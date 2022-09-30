@@ -17,6 +17,7 @@ namespace WJ
         [SerializeField] private float RoundMaxTime = 90.0f;
         [SerializeField] private Vector2 terrainSize = new Vector2(20.0f,10.0f);
         [SerializeField] private Vector3[] characterPosition = {new Vector3(0,0,0),new Vector3(0,0,0)};
+
         [SerializeField] private int maxScoreToSet = 24;
         [Header("MCTS")]
         [SerializeField] private float deltaBehaviour = 0.1f;
