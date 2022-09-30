@@ -1,12 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using WJ;
-using System;
-
 namespace WJ_MCTS
 {
-    [Serializable]
     public class GameManagerData
     {
         public bool endGame = false;

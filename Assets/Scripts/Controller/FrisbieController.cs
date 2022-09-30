@@ -39,7 +39,7 @@ namespace WJ
         {
             if(data.FrisbiData.throwMode == ThrowMode.Throw)
             {
-                data.FrisbiData.position += data.FrisbiData.currentDirection.ToVector3()*dt;
+                data.FrisbiData.position += data.FrisbiData.currentDirection*dt;
             }
             BoardCollisionFrisbie(data.FrisbiData,data);
         }
@@ -60,13 +60,13 @@ namespace WJ
             {
                 data.currentDirection.x = -data.currentDirection.x;
                 data.position = new Vector3((terrainCalculeFrisbie.x/2.0f)-rayon,data.position.y,data.position.z);
-                GameManager.Instance.AddScorePoint(gs,Faction.Right, (((terrainCalculeFrisbie.y)*(1/2.5f))-rayon < data.position.z || (-((terrainCalculeFrisbie.y)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
+                GameManager.Instance.AddScorePoint(gs,Faction.Right, ((terrainCalculeFrisbie.y*0.4f)-rayon < data.position.z || (-(terrainCalculeFrisbie.y*0.4f)+rayon > transform.position.z)) ? 3 : 5);
             }
             if(-(terrainCalculeFrisbie.x)+rayon > data.position.x)
             {
                 data.currentDirection.x = -data.currentDirection.x;
                 data.position = new Vector3(-(terrainCalculeFrisbie.x)+rayon,data.position.y,data.position.z);
-                GameManager.Instance.AddScorePoint(gs,Faction.Left, (((terrainCalculeFrisbie.y)*(1/2.5f))-rayon < data.position.z || (-((terrainCalculeFrisbie.y)*(1/2.5f))+rayon > transform.position.z)) ? 3 : 5);
+                GameManager.Instance.AddScorePoint(gs,Faction.Left, ((terrainCalculeFrisbie.y*0.4f)-rayon < data.position.z || (-(terrainCalculeFrisbie.y*0.4f)+rayon > transform.position.z)) ? 3 : 5);
             }
         }
 
