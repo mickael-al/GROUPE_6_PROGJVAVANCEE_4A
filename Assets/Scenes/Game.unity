@@ -1692,7 +1692,7 @@ MonoBehaviour:
   maxScoreToSet: 24
   deltaBehaviour: 0.03333
   percentExplorationExploitation: 50
-  numbersNode: 800
+  numbersNode: 500
   numbersMaxIteration: 1000
   numberSimulation: 20
   timeText: {fileID: 1179511997}

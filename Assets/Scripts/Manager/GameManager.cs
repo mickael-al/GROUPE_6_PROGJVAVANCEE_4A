@@ -85,6 +85,11 @@ namespace WJ
             get{return characterModeRight;}
             set{characterModeRight = value;}
         }
+
+        public static bool NotEnd(GameState old,GameState end)
+        {
+            return end.GameManagerData.scoreLeft == old.GameManagerData.scoreLeft && end.GameManagerData.scoreRight == old.GameManagerData.scoreRight && !end.GameManagerData.endSet;
+        }
         #endregion
 
         public void AddScorePoint(GameState gs, int f,int value = 1)

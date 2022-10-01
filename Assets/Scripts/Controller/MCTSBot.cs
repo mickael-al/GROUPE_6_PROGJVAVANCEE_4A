@@ -203,7 +203,7 @@ namespace WJ_Controller
             {
                 maxIteration = GameManager.Instance.NumbersMaxIteration;
                 gs = node.data.copy();
-                while(gs.GameManagerData.scoreLeft == node.data.GameManagerData.scoreLeft && gs.GameManagerData.scoreRight == node.data.GameManagerData.scoreRight && !gs.GameManagerData.endSet && maxIteration > 0)
+                while(GameManager.NotEnd(node.data,gs) && maxIteration > 0)
                 {
                     Actions(gs.characterDatas[0].handObject ? Random.Range(possibleMove.Length,NumberAction) : Random.Range(0, possibleMove.Length),gs,0);
                     Actions(gs.characterDatas[1].handObject ? Random.Range(possibleMove.Length,NumberAction) : Random.Range(0, possibleMove.Length),gs,1);
@@ -214,7 +214,7 @@ namespace WJ_Controller
                 {
                     winLeftIteration++;
                 }
-                else if(gs.GameManagerData.scoreRight != node.data.GameManagerData.scoreRight)
+                if(gs.GameManagerData.scoreRight != node.data.GameManagerData.scoreRight)
                 {
                     winRightIteration++;
                 }
